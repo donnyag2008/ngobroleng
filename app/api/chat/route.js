@@ -1,3 +1,7 @@
+export const runtime = 'edge';
+
+// Server-side API route — your Anthropic key NEVER reaches the browser
+export async function POST(request) {
 // Server-side API route — your Anthropic key NEVER reaches the browser
 export async function POST(request) {
   const { messages, scenario } = await request.json();

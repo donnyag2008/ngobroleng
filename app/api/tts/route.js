@@ -1,3 +1,8 @@
+export const runtime = 'edge';
+
+// Server-side API route — your Anthropic key NEVER reaches the browser
+export async function POST(request) {
+
 // Server-side TTS route — ElevenLabs key stays on the server
 export async function POST(request) {
   const { text, voiceId } = await request.json();
