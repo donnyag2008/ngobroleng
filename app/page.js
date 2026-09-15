@@ -471,38 +471,15 @@ export default function NgobrolEng() {
     if (!SpeechRecognition) return;
     const recognition = new SpeechRecognition();
     recognition.lang = "en-US";
-    recognition.interimResults = true;
-    recognition.continuous = true;
-    recognition.maxAlternatives = 1;
-    let finalTranscript = "";
-    let silenceTimer = null;
-
+    recognition.interimResults = false;
+    recognition.continuous = false;
     recognition.onresult = (event) => {
-      let interim = "";
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        if (event.results[i].isFinal) {
-          finalTranscript += event.results[i][0].transcript + " ";
-        } else {
-          interim += event.results[i][0].transcript;
-        }
-      }
-      setInput(finalTranscript + interim);
-      // Stop recording 2 seconds after the user stops talking
-      if (silenceTimer) clearTimeout(silenceTimer);
-      silenceTimer = setTimeout(() => {
-        recognition.stop();
-      }, 2000);
+      const transcript = event.results[0][0].transcript;
+      setInput(transcript);
+      setIsRecording(false);
     };
     recognition.onerror = () => setIsRecording(false);
-    recognition.onend = () => {
-      setIsRecording(false);
-      // Don't auto-send — let the student review, edit, then tap Send
-      if (finalTranscript.trim()) {
-        setInput(finalTranscript.trim());
-        // Focus the input so they can edit if needed
-        setTimeout(() => inputRef.current?.focus(), 100);
-      }
-    };
+    recognition.onend = () => setIsRecording(false);
     recognitionRef.current = recognition;
     recognition.start();
     setIsRecording(true);
@@ -867,7 +844,7 @@ export default function NgobrolEng() {
       }}>
         {messages.map((m, i) => {
           const isLastAI = m.role === "assistant" && i === messages.length - 1;
-          return <Message key={i} msg={m} voiceId={VOICES[selectedVoice]?.id} autoPlay={isLastAI && !loading} onSpeakDone={isLastAI ? startListening : null} />;
+          return <Message key={i} msg={m} voiceId={VOICES[selectedVoice]?.id} autoPlay={isLastAI && !loading} />;
         })}
         {loading && (
           <div style={{ display: "flex", alignItems: "center", gap: 8, paddingLeft: 4 }}>
