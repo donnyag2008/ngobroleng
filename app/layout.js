@@ -12,6 +12,7 @@ export const metadata = {
     ],
     apple: '/apple-touch-icon.png',
   },
+  manifest: '/manifest.json',
   openGraph: {
     title: 'NgobrolEng — The Fun Place to Learn English',
     description: 'Ngobrol santai sama AI yang sabar, seru, dan nggak akan menghakimi kamu. Gratis!',
