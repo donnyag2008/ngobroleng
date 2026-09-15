@@ -487,7 +487,7 @@ export default function NgobrolEng() {
         }
       }
       setInput(finalTranscript + interim);
-      // Reset silence timer — send 2 seconds after the user stops talking
+      // Stop recording 2 seconds after the user stops talking
       if (silenceTimer) clearTimeout(silenceTimer);
       silenceTimer = setTimeout(() => {
         recognition.stop();
@@ -496,8 +496,11 @@ export default function NgobrolEng() {
     recognition.onerror = () => setIsRecording(false);
     recognition.onend = () => {
       setIsRecording(false);
+      // Don't auto-send — let the student review, edit, then tap Send
       if (finalTranscript.trim()) {
-        setTimeout(() => sendMessage(finalTranscript.trim()), 300);
+        setInput(finalTranscript.trim());
+        // Focus the input so they can edit if needed
+        setTimeout(() => inputRef.current?.focus(), 100);
       }
     };
     recognitionRef.current = recognition;

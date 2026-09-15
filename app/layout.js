@@ -4,6 +4,14 @@ export const metadata = {
   title: 'NgobrolEng — Tempat Asyik Belajar Bahasa Inggris',
   description: 'Practice English conversation with AI. Fun, free, and designed for Indonesian students. The fun place to learn English!',
   keywords: 'belajar bahasa inggris, english practice, AI tutor, ngobrol english, latihan inggris',
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: '32x32' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
   openGraph: {
     title: 'NgobrolEng — The Fun Place to Learn English',
     description: 'Ngobrol santai sama AI yang sabar, seru, dan nggak akan menghakimi kamu. Gratis!',
