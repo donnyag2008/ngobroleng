@@ -301,11 +301,12 @@ function TypingIndicator() {
   );
 }
 
-function Message({ msg, voiceId }) {
+function Message({ msg, voiceId, autoPlay }) {
   const isUser = msg.role === "user";
   const [speaking, setSpeaking] = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);
   const audioRef = useRef(null);
+  const hasAutoPlayed = useRef(false);
 
   async function speakMessage() {
     // If already playing, stop
@@ -323,7 +324,7 @@ function Message({ msg, voiceId }) {
       audio.onended = () => setSpeaking(false);
       audio.onerror = () => setSpeaking(false);
       setSpeaking(true);
-      audio.play();
+      audio.play().catch(() => setSpeaking(false));
       return;
     }
 
@@ -347,7 +348,7 @@ function Message({ msg, voiceId }) {
         audioRef.current = audio;
         audio.onended = () => setSpeaking(false);
         audio.onerror = () => setSpeaking(false);
-        audio.play();
+        audio.play().catch(() => setSpeaking(false));
         return;
       }
     } catch {}
@@ -364,6 +365,14 @@ function Message({ msg, voiceId }) {
     utterance.onerror = () => setSpeaking(false);
     window.speechSynthesis.speak(utterance);
   }
+
+  // Auto-play voice for the latest AI message
+  useEffect(() => {
+    if (autoPlay && !isUser && !hasAutoPlayed.current) {
+      hasAutoPlayed.current = true;
+      speakMessage();
+    }
+  }, [autoPlay]);
 
   return (
     <div style={{
@@ -828,7 +837,10 @@ export default function NgobrolEng() {
         flex: 1, overflowY: "auto", padding: "16px 12px",
         WebkitOverflowScrolling: "touch",
       }}>
-        {messages.map((m, i) => <Message key={i} msg={m} voiceId={VOICES[selectedVoice]?.id} />)}
+        {messages.map((m, i) => {
+          const isLastAI = m.role === "assistant" && i === messages.length - 1;
+          return <Message key={i} msg={m} voiceId={VOICES[selectedVoice]?.id} autoPlay={isLastAI && !loading} />;
+        })}
         {loading && (
           <div style={{ display: "flex", alignItems: "center", gap: 8, paddingLeft: 4 }}>
             <div style={{
