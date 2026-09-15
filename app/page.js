@@ -800,6 +800,38 @@ export default function NgobrolEng() {
           ))}
         </div>
 
+        {/* Share */}
+        <div style={{ padding: "0 20px 24px", maxWidth: 400, margin: "0 auto", textAlign: "center" }}>
+          <button
+            onClick={async () => {
+              const shareData = {
+                title: "NgobrolEng",
+                text: "Latihan ngobrol English gratis pakai AI! Ada IELTS & TOEFL Speaking juga. Coba sekarang:",
+                url: "https://ngobroleng.com",
+              };
+              try {
+                if (navigator.share) {
+                  await navigator.share(shareData);
+                } else {
+                  window.open("https://wa.me/?text=" + encodeURIComponent(shareData.text + " " + shareData.url), "_blank");
+                }
+              } catch {}
+            }}
+            style={{
+              background: "#25D366", color: "#fff", border: "none",
+              padding: "12px 28px", borderRadius: 14, fontSize: 14, fontWeight: 700,
+              cursor: "pointer", width: "100%",
+              boxShadow: "0 3px 10px rgba(37,211,102,0.25)",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+              transition: "transform 0.15s",
+            }}
+            onMouseDown={e => e.currentTarget.style.transform = "scale(0.97)"}
+            onMouseUp={e => e.currentTarget.style.transform = "scale(1)"}
+          >
+            📤 Share NgobrolEng ke teman
+          </button>
+        </div>
+
         {/* Footer */}
         <div style={{ textAlign: "center", padding: "0 20px 28px" }}>
           <div style={{
