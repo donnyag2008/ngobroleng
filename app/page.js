@@ -301,12 +301,17 @@ function TypingIndicator() {
   );
 }
 
-function Message({ msg, voiceId, autoPlay }) {
+function Message({ msg, voiceId, autoPlay, onSpeakDone }) {
   const isUser = msg.role === "user";
   const [speaking, setSpeaking] = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);
   const audioRef = useRef(null);
   const hasAutoPlayed = useRef(false);
+
+  function handleSpeakEnd() {
+    setSpeaking(false);
+    if (onSpeakDone) onSpeakDone();
+  }
 
   async function speakMessage() {
     // If already playing, stop
@@ -321,7 +326,7 @@ function Message({ msg, voiceId, autoPlay }) {
     if (audioUrl) {
       const audio = new Audio(audioUrl);
       audioRef.current = audio;
-      audio.onended = () => setSpeaking(false);
+      audio.onended = () => handleSpeakEnd();
       audio.onerror = () => setSpeaking(false);
       setSpeaking(true);
       audio.play().catch(() => setSpeaking(false));
@@ -346,7 +351,7 @@ function Message({ msg, voiceId, autoPlay }) {
         setAudioUrl(url);
         const audio = new Audio(url);
         audioRef.current = audio;
-        audio.onended = () => setSpeaking(false);
+        audio.onended = () => handleSpeakEnd();
         audio.onerror = () => setSpeaking(false);
         audio.play().catch(() => setSpeaking(false));
         return;
@@ -361,7 +366,7 @@ function Message({ msg, voiceId, autoPlay }) {
     const voices = window.speechSynthesis.getVoices();
     const british = voices.find(v => v.lang === "en-GB") || voices.find(v => v.lang.startsWith("en"));
     if (british) utterance.voice = british;
-    utterance.onend = () => setSpeaking(false);
+    utterance.onend = () => handleSpeakEnd();
     utterance.onerror = () => setSpeaking(false);
     window.speechSynthesis.speak(utterance);
   }
@@ -460,33 +465,53 @@ export default function NgobrolEng() {
     if (view === "chat") inputRef.current?.focus();
   }, [view]);
 
+  function startListening() {
+    if (isRecording || loading) return;
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = true;
+    recognition.continuous = true;
+    recognition.maxAlternatives = 1;
+    let finalTranscript = "";
+    let silenceTimer = null;
+
+    recognition.onresult = (event) => {
+      let interim = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript + " ";
+        } else {
+          interim += event.results[i][0].transcript;
+        }
+      }
+      setInput(finalTranscript + interim);
+      // Reset silence timer — send 2 seconds after the user stops talking
+      if (silenceTimer) clearTimeout(silenceTimer);
+      silenceTimer = setTimeout(() => {
+        recognition.stop();
+      }, 2000);
+    };
+    recognition.onerror = () => setIsRecording(false);
+    recognition.onend = () => {
+      setIsRecording(false);
+      if (finalTranscript.trim()) {
+        setTimeout(() => sendMessage(finalTranscript.trim()), 300);
+      }
+    };
+    recognitionRef.current = recognition;
+    recognition.start();
+    setIsRecording(true);
+  }
+
   function toggleRecording() {
     if (isRecording) {
       recognitionRef.current?.stop();
       setIsRecording(false);
       return;
     }
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      alert("Sorry, your browser doesn't support speech recognition. Try Chrome!");
-      return;
-    }
-    const recognition = new SpeechRecognition();
-    recognition.lang = "en-US";
-    recognition.interimResults = false;
-    recognition.continuous = false;
-    recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript;
-      setInput(transcript);
-      setIsRecording(false);
-      // Auto-send after short delay so user can see what was captured
-      setTimeout(() => sendMessage(transcript), 400);
-    };
-    recognition.onerror = () => setIsRecording(false);
-    recognition.onend = () => setIsRecording(false);
-    recognitionRef.current = recognition;
-    recognition.start();
-    setIsRecording(true);
+    startListening();
   }
 
   async function sendMessage(userText) {
@@ -839,7 +864,7 @@ export default function NgobrolEng() {
       }}>
         {messages.map((m, i) => {
           const isLastAI = m.role === "assistant" && i === messages.length - 1;
-          return <Message key={i} msg={m} voiceId={VOICES[selectedVoice]?.id} autoPlay={isLastAI && !loading} />;
+          return <Message key={i} msg={m} voiceId={VOICES[selectedVoice]?.id} autoPlay={isLastAI && !loading} onSpeakDone={isLastAI ? startListening : null} />;
         })}
         {loading && (
           <div style={{ display: "flex", alignItems: "center", gap: 8, paddingLeft: 4 }}>
