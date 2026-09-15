@@ -301,7 +301,7 @@ function TypingIndicator() {
   );
 }
 
-function Message({ msg, voiceId, autoPlay, onSpeakDone }) {
+function Message({ msg, voiceId, autoPlay, onSpeakDone, activeAudioRef }) {
   const isUser = msg.role === "user";
   const [speaking, setSpeaking] = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);
@@ -326,6 +326,7 @@ function Message({ msg, voiceId, autoPlay, onSpeakDone }) {
     if (audioUrl) {
       const audio = new Audio(audioUrl);
       audioRef.current = audio;
+      if (activeAudioRef) activeAudioRef.current = audio;
       audio.onended = () => handleSpeakEnd();
       audio.onerror = () => setSpeaking(false);
       setSpeaking(true);
@@ -351,6 +352,7 @@ function Message({ msg, voiceId, autoPlay, onSpeakDone }) {
         setAudioUrl(url);
         const audio = new Audio(url);
         audioRef.current = audio;
+        if (activeAudioRef) activeAudioRef.current = audio;
         audio.onended = () => handleSpeakEnd();
         audio.onerror = () => setSpeaking(false);
         audio.play().catch(() => setSpeaking(false));
@@ -445,6 +447,7 @@ export default function NgobrolEng() {
   const recognitionRef = useRef(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const activeAudioRef = useRef(null);
 
   // ElevenLabs voice IDs — British for IELTS/casual, American for TOEFL
   const VOICES = {
@@ -459,18 +462,27 @@ export default function NgobrolEng() {
     window.speechSynthesis?.getVoices();
   }, []);
 
+  // Stop all audio — ElevenLabs + browser TTS
+  function stopAllAudio() {
+    window.speechSynthesis?.cancel();
+    if (activeAudioRef.current) {
+      activeAudioRef.current.pause();
+      activeAudioRef.current.currentTime = 0;
+      activeAudioRef.current = null;
+    }
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      setIsRecording(false);
+    }
+  }
+
   // Handle phone back button — go to landing instead of closing app
   useEffect(() => {
     function handleBack(e) {
       if (view === "chat") {
         e.preventDefault();
+        stopAllAudio();
         setView("landing");
-        // Stop any ongoing speech
-        window.speechSynthesis?.cancel();
-        if (recognitionRef.current) {
-          recognitionRef.current.stop();
-          setIsRecording(false);
-        }
       }
     }
     window.addEventListener("popstate", handleBack);
@@ -819,7 +831,7 @@ export default function NgobrolEng() {
         color: "#fff", flexShrink: 0,
         borderBottom: `3px solid ${C.red}`,
       }}>
-        <button onClick={() => setView("landing")} style={{
+        <button onClick={() => { stopAllAudio(); setView("landing"); }} style={{
           background: "rgba(255,255,255,0.12)", border: "none", color: "#fff",
           width: 34, height: 34, borderRadius: 10, cursor: "pointer", fontSize: 18,
           display: "flex", alignItems: "center", justifyContent: "center",
@@ -877,7 +889,7 @@ export default function NgobrolEng() {
       }}>
         {messages.map((m, i) => {
           const isLastAI = m.role === "assistant" && i === messages.length - 1;
-          return <Message key={i} msg={m} voiceId={VOICES[selectedVoice]?.id} autoPlay={isLastAI && !loading} onSpeakDone={isLastAI ? () => setTimeout(startListening, 500) : null} />;
+          return <Message key={i} msg={m} voiceId={VOICES[selectedVoice]?.id} autoPlay={isLastAI && !loading} onSpeakDone={isLastAI ? () => setTimeout(startListening, 500) : null} activeAudioRef={activeAudioRef} />;
         })}
         {loading && (
           <div style={{ display: "flex", alignItems: "center", gap: 8, paddingLeft: 4 }}>
