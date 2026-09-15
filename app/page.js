@@ -3,12 +3,20 @@
 import { useState, useRef, useEffect } from "react";
 
 const SCENARIOS = [
-  { icon: "☕", label: "Ordering Coffee", desc: "Practice ordering at a cafe", prompt: "Let's practice ordering coffee at a cafe. You walk in and I'm the barista. What would you like to order?" },
-  { icon: "✈️", label: "At the Airport", desc: "Navigate an airport in English", prompt: "Let's practice airport English. You just arrived at the airport for your first international flight. I'm the check-in staff. How can I help you today?" },
-  { icon: "💼", label: "Job Interview", desc: "Ace your interview in English", prompt: "Let's practice a job interview! I'll be the interviewer. So, tell me a little about yourself — why are you interested in this position?" },
-  { icon: "🍜", label: "Food & Cooking", desc: "Talk about your favorite foods", prompt: "Hey! I'm curious — what's your favorite Indonesian food? And have you ever tried cooking it yourself?" },
-  { icon: "🎮", label: "Gaming Chat", desc: "Talk about games you love", prompt: "Hey! Are you into gaming? What games are you playing right now? I'd love to hear about your favorites!" },
-  { icon: "🎵", label: "Music & Artists", desc: "Share your music taste", prompt: "What kind of music are you into? Any favorite artists or songs lately? Let's chat about music!" },
+  { icon: "☕", label: "Ordering Coffee", desc: "Practice ordering at a cafe", prompt: "Let's practice ordering coffee at a cafe. You walk in and I'm the barista. What would you like to order?", mode: "casual" },
+  { icon: "✈️", label: "At the Airport", desc: "Navigate an airport in English", prompt: "Let's practice airport English. You just arrived at the airport for your first international flight. I'm the check-in staff. How can I help you today?", mode: "casual" },
+  { icon: "💼", label: "Job Interview", desc: "Ace your interview in English", prompt: "Let's practice a job interview! I'll be the interviewer. So, tell me a little about yourself — why are you interested in this position?", mode: "casual" },
+  { icon: "🍜", label: "Food & Cooking", desc: "Talk about your favorite foods", prompt: "Hey! I'm curious — what's your favorite Indonesian food? And have you ever tried cooking it yourself?", mode: "casual" },
+  { icon: "🎮", label: "Gaming Chat", desc: "Talk about games you love", prompt: "Hey! Are you into gaming? What games are you playing right now? I'd love to hear about your favorites!", mode: "casual" },
+  { icon: "🎵", label: "Music & Artists", desc: "Share your music taste", prompt: "What kind of music are you into? Any favorite artists or songs lately? Let's chat about music!", mode: "casual" },
+];
+
+const TEST_PREP = [
+  { icon: "🎓", label: "IELTS Part 1", desc: "Introduction & Interview — personal questions", prompt: "Welcome to your IELTS Speaking practice! I'm your examiner. Let's begin with Part 1. First, can you tell me your full name, please?", mode: "ielts_part1", badge: "IELTS", badgeColor: "#7c3aed" },
+  { icon: "🗣️", label: "IELTS Part 2", desc: "Long Turn — speak for 2 minutes on a topic", prompt: "Welcome to IELTS Speaking Part 2 practice! I'm going to give you a topic card. You'll have 1 minute to prepare, then speak for 1–2 minutes. Ready? Here's your first cue card.", mode: "ielts_part2", badge: "IELTS", badgeColor: "#7c3aed" },
+  { icon: "💬", label: "IELTS Part 3", desc: "Discussion — deeper analytical questions", prompt: "Welcome to IELTS Speaking Part 3 practice! This is the discussion round where we explore ideas in more depth. I'll ask you some questions that require you to analyse, compare, and give your opinion. Let's begin.", mode: "ielts_part3", badge: "IELTS", badgeColor: "#7c3aed" },
+  { icon: "🇺🇸", label: "TOEFL Independent", desc: "Express & support your personal opinion", prompt: "Welcome to TOEFL iBT Speaking practice! We'll start with an Independent Speaking Task. I'll give you a question, you get 15 seconds to prepare, then 45 seconds to speak. Ready? Here's your first question.", mode: "toefl_independent", badge: "TOEFL", badgeColor: "#ea580c" },
+  { icon: "📚", label: "TOEFL Integrated", desc: "Summarise readings & lectures", prompt: "Welcome to TOEFL iBT Integrated Speaking practice! I'll present you with a short reading passage and a related lecture, then ask you to summarise and connect the information. Let's start with Task 2.", mode: "toefl_integrated", badge: "TOEFL", badgeColor: "#ea580c" },
 ];
 
 const C = {
@@ -417,6 +425,7 @@ export default function NgobrolEng() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedScenario, setSelectedScenario] = useState(null);
+  const [chatMode, setChatMode] = useState("casual");
   const [isRecording, setIsRecording] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState("rachel");
   const recognitionRef = useRef(null);
@@ -485,6 +494,7 @@ export default function NgobrolEng() {
         body: JSON.stringify({
           messages: apiMessages,
           scenario: selectedScenario ? `${selectedScenario.label}. ${selectedScenario.desc}` : null,
+          mode: chatMode,
         }),
       });
       const data = await res.json();
@@ -497,6 +507,7 @@ export default function NgobrolEng() {
 
   function startChat(scenario) {
     setSelectedScenario(scenario || null);
+    setChatMode(scenario?.mode || "casual");
     setMessages(scenario
       ? [{ role: "assistant", content: scenario.prompt }]
       : [{ role: "assistant", content: "Hey! 👋 Aku NgobrolEng, teman ngobrol bahasa Inggris kamu. Mau ngobrol tentang apa hari ini? Just type in English — or Bahasa juga boleh, nanti aku bantu! 😊" }]
@@ -657,6 +668,58 @@ export default function NgobrolEng() {
           </div>
         </div>
 
+        {/* Test Prep */}
+        <div style={{ padding: "8px 20px 20px", maxWidth: 400, margin: "0 auto" }}>
+          <div style={{
+            display: "flex", alignItems: "center", gap: 8, marginBottom: 4,
+          }}>
+            <div style={{ fontSize: 17, fontWeight: 700, color: C.navy }}>
+              📝 Test Prep
+            </div>
+            <span style={{
+              fontSize: 10, fontWeight: 700, color: "#fff",
+              background: "linear-gradient(135deg, #7c3aed, #ea580c)",
+              padding: "2px 8px", borderRadius: 6, letterSpacing: "0.5px",
+            }}>NEW</span>
+          </div>
+          <div style={{ fontSize: 13, color: C.gray, marginBottom: 16 }}>
+            Latihan IELTS & TOEFL gratis — AI jadi examiner kamu!
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {TEST_PREP.map(s => (
+              <button key={s.label} onClick={() => startChat(s)} style={{
+                background: C.white, border: `1.5px solid ${C.grayLight}`, borderRadius: 16,
+                padding: "14px 14px", textAlign: "left", cursor: "pointer",
+                transition: "all 0.15s", display: "flex", alignItems: "center", gap: 12,
+              }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = s.badgeColor;
+                  e.currentTarget.style.boxShadow = `0 2px 12px ${s.badgeColor}22`;
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = C.grayLight;
+                  e.currentTarget.style.boxShadow = "none";
+                }}
+              >
+                <div style={{ fontSize: 28, flexShrink: 0 }}>{s.icon}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
+                    <span style={{ fontSize: 14, fontWeight: 600, color: C.navy }}>{s.label}</span>
+                    <span style={{
+                      fontSize: 9, fontWeight: 700, color: "#fff",
+                      background: s.badgeColor, padding: "1px 6px",
+                      borderRadius: 4, letterSpacing: "0.5px",
+                    }}>{s.badge}</span>
+                  </div>
+                  <div style={{ fontSize: 12, color: C.gray, lineHeight: 1.4 }}>{s.desc}</div>
+                </div>
+                <div style={{ fontSize: 18, color: C.grayLight, flexShrink: 0 }}>→</div>
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Why NgobrolEng */}
         <div style={{ padding: "20px 20px 36px", maxWidth: 400, margin: "0 auto" }}>
           <div style={{ fontSize: 17, fontWeight: 700, color: C.navy, marginBottom: 14 }}>
@@ -733,8 +796,17 @@ export default function NgobrolEng() {
           <div style={{ fontSize: 15, fontWeight: 700 }}>
             <BrandLogo />
           </div>
-          <div style={{ fontSize: 11, opacity: 0.8 }}>
-            {selectedScenario ? `🎯 ${selectedScenario.label}` : "Your English buddy 🐾"}
+          <div style={{ fontSize: 11, opacity: 0.8, display: "flex", alignItems: "center", gap: 4 }}>
+            {selectedScenario?.badge ? (
+              <>
+                <span style={{
+                  fontSize: 8, fontWeight: 700, color: "#fff",
+                  background: selectedScenario.badgeColor, padding: "1px 5px",
+                  borderRadius: 3, letterSpacing: "0.5px",
+                }}>{selectedScenario.badge}</span>
+                {selectedScenario.label}
+              </>
+            ) : selectedScenario ? `🎯 ${selectedScenario.label}` : "Your English buddy 🐾"}
           </div>
         </div>
         {/* Voice selector */}
