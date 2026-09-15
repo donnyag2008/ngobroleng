@@ -441,15 +441,15 @@ export default function NgobrolEng() {
   const [selectedScenario, setSelectedScenario] = useState(null);
   const [chatMode, setChatMode] = useState("casual");
   const [isRecording, setIsRecording] = useState(false);
-  const [selectedVoice, setSelectedVoice] = useState("rachel");
+  const [selectedVoice, setSelectedVoice] = useState("lily");
   const recognitionRef = useRef(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
   // ElevenLabs voice IDs — placeholder until celebrity voices
   const VOICES = {
-    rachel: { id: "21m00Tcm4TlvDq8ikWAM", label: "Rachel 🇬🇧", desc: "Warm British female" },
-    daniel: { id: "onwK4e9ZLuTAKqWW03F9", label: "Daniel 🇬🇧", desc: "Friendly British male" },
+    lily: { id: "pFZP5JQG7iQjIQuC4Bku", label: "Lily 🇬🇧", desc: "Warm British female" },
+    george: { id: "JBFqnCBsd6RMkjVDRZzb", label: "George 🇬🇧", desc: "Warm British male" },
   };
 
   useEffect(() => {
@@ -825,7 +825,7 @@ export default function NgobrolEng() {
         </div>
         {/* Voice selector */}
         <button
-          onClick={() => setSelectedVoice(v => v === "rachel" ? "daniel" : "rachel")}
+          onClick={() => setSelectedVoice(v => v === "lily" ? "george" : "lily")}
           style={{
             background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.2)",
             color: "#fff", padding: "4px 10px", borderRadius: 8,
