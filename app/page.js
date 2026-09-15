@@ -493,9 +493,7 @@ export default function NgobrolEng() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  useEffect(() => {
-    if (view === "chat") inputRef.current?.focus();
-  }, [view]);
+  // Don't auto-focus input on mobile — it pops up the keyboard and hides the first message
 
   function startListening() {
     if (isRecording || loading) return;
