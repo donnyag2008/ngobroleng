@@ -1,22 +1,22 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef, useEffect } from "react";
 
 const SCENARIOS = [
-  { icon: "☕", label: "Ordering Coffee", desc: "Practice ordering at a cafe", prompt: "Let's practice ordering coffee at a cafe. You walk in and I'm the barista. What would you like to order?", mode: "casual" },
-  { icon: "✈️", label: "At the Airport", desc: "Navigate an airport in English", prompt: "Let's practice airport English. You just arrived at the airport for your first international flight. I'm the check-in staff. How can I help you today?", mode: "casual" },
-  { icon: "💼", label: "Job Interview", desc: "Ace your interview in English", prompt: "Let's practice a job interview! I'll be the interviewer. So, tell me a little about yourself — why are you interested in this position?", mode: "casual" },
-  { icon: "🍜", label: "Food & Cooking", desc: "Talk about your favorite foods", prompt: "Hey! I'm curious — what's your favorite Indonesian food? And have you ever tried cooking it yourself?", mode: "casual" },
-  { icon: "🎮", label: "Gaming Chat", desc: "Talk about games you love", prompt: "Hey! Are you into gaming? What games are you playing right now? I'd love to hear about your favorites!", mode: "casual" },
-  { icon: "🎵", label: "Music & Artists", desc: "Share your music taste", prompt: "What kind of music are you into? Any favorite artists or songs lately? Let's chat about music!", mode: "casual" },
+  { icon: "â˜•", label: "Ordering Coffee", desc: "Practice ordering at a cafe", prompt: "Let's practice ordering coffee at a cafe. You walk in and I'm the barista. What would you like to order?", mode: "casual" },
+  { icon: "âœˆï¸", label: "At the Airport", desc: "Navigate an airport in English", prompt: "Let's practice airport English. You just arrived at the airport for your first international flight. I'm the check-in staff. How can I help you today?", mode: "casual" },
+  { icon: "ðŸ’¼", label: "Job Interview", desc: "Ace your interview in English", prompt: "Let's practice a job interview! I'll be the interviewer. So, tell me a little about yourself â€” why are you interested in this position?", mode: "casual" },
+  { icon: "ðŸœ", label: "Food & Cooking", desc: "Talk about your favorite foods", prompt: "Hey! I'm curious â€” what's your favorite Indonesian food? And have you ever tried cooking it yourself?", mode: "casual" },
+  { icon: "ðŸŽ®", label: "Gaming Chat", desc: "Talk about games you love", prompt: "Hey! Are you into gaming? What games are you playing right now? I'd love to hear about your favorites!", mode: "casual" },
+  { icon: "ðŸŽµ", label: "Music & Artists", desc: "Share your music taste", prompt: "What kind of music are you into? Any favorite artists or songs lately? Let's chat about music!", mode: "casual" },
 ];
 
 const TEST_PREP = [
-  { icon: "🎓", label: "IELTS Part 1", desc: "Introduction & Interview — personal questions", prompt: "Welcome to your IELTS Speaking practice! I'm your examiner. Let's begin with Part 1. First, can you tell me your full name, please?", mode: "ielts_part1", badge: "IELTS", badgeColor: "#7c3aed" },
-  { icon: "🗣️", label: "IELTS Part 2", desc: "Long Turn — speak for 2 minutes on a topic", prompt: "Welcome to IELTS Speaking Part 2 practice! I'm going to give you a topic card. You'll have 1 minute to prepare, then speak for 1–2 minutes. Ready? Here's your first cue card.", mode: "ielts_part2", badge: "IELTS", badgeColor: "#7c3aed" },
-  { icon: "💬", label: "IELTS Part 3", desc: "Discussion — deeper analytical questions", prompt: "Welcome to IELTS Speaking Part 3 practice! This is the discussion round where we explore ideas in more depth. I'll ask you some questions that require you to analyse, compare, and give your opinion. Let's begin.", mode: "ielts_part3", badge: "IELTS", badgeColor: "#7c3aed" },
-  { icon: "🇺🇸", label: "TOEFL Independent", desc: "Express & support your personal opinion", prompt: "Welcome to TOEFL iBT Speaking practice! We'll start with an Independent Speaking Task. I'll give you a question, you get 15 seconds to prepare, then 45 seconds to speak. Ready? Here's your first question.", mode: "toefl_independent", badge: "TOEFL", badgeColor: "#ea580c" },
-  { icon: "📚", label: "TOEFL Integrated", desc: "Summarise readings & lectures", prompt: "Welcome to TOEFL iBT Integrated Speaking practice! I'll present you with a short reading passage and a related lecture, then ask you to summarise and connect the information. Let's start with Task 2.", mode: "toefl_integrated", badge: "TOEFL", badgeColor: "#ea580c" },
+  { icon: "ðŸŽ“", label: "IELTS Part 1", desc: "Introduction & Interview â€” personal questions", prompt: "Welcome to your IELTS Speaking practice! I'm your examiner. Let's begin with Part 1. First, can you tell me your full name, please?", mode: "ielts_part1", badge: "IELTS", badgeColor: "#7c3aed" },
+  { icon: "ðŸ—£ï¸", label: "IELTS Part 2", desc: "Long Turn â€” speak for 2 minutes on a topic", prompt: "Welcome to IELTS Speaking Part 2 practice! I'm going to give you a topic card. You'll have 1 minute to prepare, then speak for 1â€“2 minutes. Ready? Here's your first cue card.", mode: "ielts_part2", badge: "IELTS", badgeColor: "#7c3aed" },
+  { icon: "ðŸ’¬", label: "IELTS Part 3", desc: "Discussion â€” deeper analytical questions", prompt: "Welcome to IELTS Speaking Part 3 practice! This is the discussion round where we explore ideas in more depth. I'll ask you some questions that require you to analyse, compare, and give your opinion. Let's begin.", mode: "ielts_part3", badge: "IELTS", badgeColor: "#7c3aed" },
+  { icon: "ðŸ‡ºðŸ‡¸", label: "TOEFL Independent", desc: "Express & support your personal opinion", prompt: "Welcome to TOEFL iBT Speaking practice! We'll start with an Independent Speaking Task. I'll give you a question, you get 15 seconds to prepare, then 45 seconds to speak. Ready? Here's your first question.", mode: "toefl_independent", badge: "TOEFL", badgeColor: "#ea580c" },
+  { icon: "ðŸ“š", label: "TOEFL Integrated", desc: "Summarise readings & lectures", prompt: "Welcome to TOEFL iBT Integrated Speaking practice! I'll present you with a short reading passage and a related lecture, then ask you to summarise and connect the information. Let's start with Task 2.", mode: "toefl_integrated", badge: "TOEFL", badgeColor: "#ea580c" },
 ];
 
 const C = {
@@ -81,7 +81,7 @@ function UnionJackBadge({ text = "ENG", height = 28, fontSize = 16, borderRadius
             <stop offset="100%" stopColor="#B8860B"/>
           </linearGradient>
         </defs>
-        {/* Thick dark navy outline — ensures contrast against white, red, AND blue */}
+        {/* Thick dark navy outline â€” ensures contrast against white, red, AND blue */}
         <text
           x="42" y="21"
           textAnchor="middle" dominantBaseline="central"
@@ -169,20 +169,20 @@ function FoxMascot({ size = 120 }) {
       <ellipse cx="100" cy="155" rx="42" ry="26" fill="#E8630A"/>
       <ellipse cx="100" cy="158" rx="30" ry="18" fill="#FFF0DC"/>
       
-      {/* Big bushy tail — curling up cheekily */}
+      {/* Big bushy tail â€” curling up cheekily */}
       <path d="M145,148 Q175,130 170,100 Q168,85 155,82" stroke="none" fill="#E8630A"/>
       <path d="M148,150 Q172,132 168,104 Q166,90 156,86" stroke="none" fill="#D45500"/>
       {/* White tail tip */}
       <path d="M155,82 Q150,78 156,86 Q162,84 155,82" fill="#FFF0DC"/>
       <circle cx="155" cy="83" r="5" fill="#FFF8F0"/>
       
-      {/* Legs — short and playful */}
+      {/* Legs â€” short and playful */}
       <rect x="72" y="168" width="13" height="18" rx="6" fill="#E8630A"/>
       <rect x="115" y="168" width="13" height="18" rx="6" fill="#E8630A"/>
       <rect x="72" y="179" width="13" height="7" rx="5" fill="#2D1B0E"/>
       <rect x="115" y="179" width="13" height="7" rx="5" fill="#2D1B0E"/>
       
-      {/* Head — slightly tilted for cheekiness */}
+      {/* Head â€” slightly tilted for cheekiness */}
       <g transform="rotate(-5, 100, 98)">
         {/* Head shape */}
         <ellipse cx="100" cy="98" rx="40" ry="36" fill="#E8630A"/>
@@ -192,7 +192,7 @@ function FoxMascot({ size = 120 }) {
         {/* White face */}
         <path d="M80,85 Q100,78 120,85 L116,120 Q100,130 84,120 Z" fill="#FFF0DC"/>
         
-        {/* Ears — big pointy fox ears */}
+        {/* Ears â€” big pointy fox ears */}
         <path d="M62,82 Q52,42 76,64 L72,86 Z" fill="#E8630A"/>
         <path d="M64,80 Q56,50 74,66 L72,84 Z" fill="#D45500"/>
         <path d="M66,78 Q60,56 73,68 L72,80 Z" fill="#FFB8B8"/>
@@ -201,29 +201,29 @@ function FoxMascot({ size = 120 }) {
         <path d="M136,80 Q144,50 126,66 L128,84 Z" fill="#D45500"/>
         <path d="M134,78 Q140,56 127,68 L128,80 Z" fill="#FFB8B8"/>
         
-        {/* === EYES — one open, one WINKING === */}
-        {/* Left eye — open, looking at you */}
+        {/* === EYES â€” one open, one WINKING === */}
+        {/* Left eye â€” open, looking at you */}
         <ellipse cx="86" cy="95" rx="9" ry="10" fill="#fff"/>
         <ellipse cx="88" cy="96" rx="6" ry="7" fill="#2D1B0E"/>
         <circle cx="90" cy="93" r="2.5" fill="#fff"/>
         <circle cx="86" cy="98" r="1.2" fill="#fff" opacity="0.5"/>
-        {/* Raised eyebrow — cheeky */}
+        {/* Raised eyebrow â€” cheeky */}
         <path d="M76,84 Q82,78 95,83" stroke="#D45500" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
         
-        {/* Right eye — WINKING */}
+        {/* Right eye â€” WINKING */}
         <path d="M107,95 Q114,88 121,95" stroke="#2D1B0E" strokeWidth="3" fill="none" strokeLinecap="round"/>
         {/* Wink crinkle lines */}
         <path d="M122,91 L126,89" stroke="#D45500" strokeWidth="1.5" strokeLinecap="round"/>
         <path d="M123,95 L127,95" stroke="#D45500" strokeWidth="1.5" strokeLinecap="round"/>
         
-        {/* Nose — fox shaped */}
+        {/* Nose â€” fox shaped */}
         <ellipse cx="100" cy="108" rx="6" ry="4.5" fill="#2D1B0E"/>
         <ellipse cx="101.5" cy="107" rx="2" ry="1.2" fill="#5A4030" opacity="0.5"/>
         
-        {/* Mouth — big cheeky grin */}
+        {/* Mouth â€” big cheeky grin */}
         <path d="M90,113 Q95,119 100,114 Q105,119 110,113" stroke="#2D1B0E" strokeWidth="2" fill="none" strokeLinecap="round"/>
         
-        {/* Tongue sticking out — playful */}
+        {/* Tongue sticking out â€” playful */}
         <ellipse cx="100" cy="119" rx="5" ry="7" fill="#FF6B6B"/>
         <ellipse cx="100" cy="118" rx="3.5" ry="4.5" fill="#FF9090"/>
         {/* Tongue line */}
@@ -252,13 +252,13 @@ function FoxMascot({ size = 120 }) {
         <circle cx="143" cy="92" r="2" fill="#C8102E"/>
       </g>
       
-      {/* === SPEECH BUBBLE — cheeky greeting === */}
+      {/* === SPEECH BUBBLE â€” cheeky greeting === */}
       <rect x="138" y="38" width="56" height="30" rx="10" fill="#fff" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.1))"/>
       <polygon points="142,64 148,70 154,62" fill="#fff"/>
       <text x="166" y="48" textAnchor="middle" fontSize="9" fontWeight="700" fill={C.navy}
         fontFamily="Inter, -apple-system, sans-serif">Yo, let's</text>
       <text x="166" y="60" textAnchor="middle" fontSize="9" fontWeight="700" fill={C.red}
-        fontFamily="Inter, -apple-system, sans-serif">ngobrol! 😜</text>
+        fontFamily="Inter, -apple-system, sans-serif">ngobrol! ðŸ˜œ</text>
     </svg>
   );
 }
@@ -425,7 +425,7 @@ function Message({ msg, voiceId, autoPlay, onSpeakDone }) {
               transition: "color 0.15s",
             }}
           >
-            {speaking ? "⏹️ Stop" : "🔊 Listen"}
+            {speaking ? "â¹ï¸ Stop" : "ðŸ”Š Listen"}
           </button>
         )}
       </div>
@@ -446,10 +446,10 @@ export default function NgobrolEng() {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
-  // ElevenLabs voice IDs — placeholder until celebrity voices
+  // ElevenLabs voice IDs â€” placeholder until celebrity voices
   const VOICES = {
-    lily: { id: "pFZP5JQG7iQjIQuC4Bku", label: "Lily 🇬🇧", desc: "Warm British female" },
-    george: { id: "JBFqnCBsd6RMkjVDRZzb", label: "George 🇬🇧", desc: "Warm British male" },
+    lily: { id: "pFZP5JQG7iQjIQuC4Bku", label: "Lily ðŸ‡¬ðŸ‡§", desc: "Warm British female" },
+    george: { id: "JBFqnCBsd6RMkjVDRZzb", label: "George ðŸ‡¬ðŸ‡§", desc: "Warm British male" },
   };
 
   useEffect(() => {
@@ -514,7 +514,7 @@ export default function NgobrolEng() {
       const data = await res.json();
       setMessages(prev => [...prev, { role: "assistant", content: data.reply }]);
     } catch {
-      setMessages(prev => [...prev, { role: "assistant", content: "Oops, something went wrong. Coba lagi ya! 😊" }]);
+      setMessages(prev => [...prev, { role: "assistant", content: "Oops, something went wrong. Coba lagi ya! ðŸ˜Š" }]);
     }
     setLoading(false);
   }
@@ -524,12 +524,12 @@ export default function NgobrolEng() {
     setChatMode(scenario?.mode || "casual");
     setMessages(scenario
       ? [{ role: "assistant", content: scenario.prompt }]
-      : [{ role: "assistant", content: "Hey! 👋 Aku NgobrolEng, teman ngobrol bahasa Inggris kamu. Mau ngobrol tentang apa hari ini? Just type in English — or Bahasa juga boleh, nanti aku bantu! 😊" }]
+      : [{ role: "assistant", content: "Hey! ðŸ‘‹ Aku NgobrolEng, teman ngobrol bahasa Inggris kamu. Mau ngobrol tentang apa hari ini? Just type in English â€” or Bahasa juga boleh, nanti aku bantu! ðŸ˜Š" }]
     );
     setView("chat");
   }
 
-  // ─── LANDING PAGE ───
+  // â”€â”€â”€ LANDING PAGE â”€â”€â”€
   if (view === "landing") {
     return (
       <div style={{
@@ -642,7 +642,7 @@ export default function NgobrolEng() {
                   onMouseDown={e => e.currentTarget.style.transform = "scale(0.97)"}
                   onMouseUp={e => e.currentTarget.style.transform = "scale(1)"}
                 >
-                  Mulai Ngobrol 🚀
+                  Mulai Ngobrol ðŸš€
                 </button>
               </div>
             </div>
@@ -655,7 +655,7 @@ export default function NgobrolEng() {
             Pilih topik ngobrol
           </div>
           <div style={{ fontSize: 13, color: C.gray, marginBottom: 16 }}>
-            Atau langsung freestyle di atas — terserah kamu!
+            Atau langsung freestyle di atas â€” terserah kamu!
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
@@ -688,7 +688,7 @@ export default function NgobrolEng() {
             display: "flex", alignItems: "center", gap: 8, marginBottom: 4,
           }}>
             <div style={{ fontSize: 17, fontWeight: 700, color: C.navy }}>
-              📝 Test Prep
+              ðŸ“ Test Prep
             </div>
             <span style={{
               fontSize: 10, fontWeight: 700, color: "#fff",
@@ -697,7 +697,7 @@ export default function NgobrolEng() {
             }}>NEW</span>
           </div>
           <div style={{ fontSize: 13, color: C.gray, marginBottom: 16 }}>
-            Latihan IELTS & TOEFL gratis — AI jadi examiner kamu!
+            Latihan IELTS & TOEFL gratis â€” AI jadi examiner kamu!
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -728,7 +728,7 @@ export default function NgobrolEng() {
                   </div>
                   <div style={{ fontSize: 12, color: C.gray, lineHeight: 1.4 }}>{s.desc}</div>
                 </div>
-                <div style={{ fontSize: 18, color: C.grayLight, flexShrink: 0 }}>→</div>
+                <div style={{ fontSize: 18, color: C.grayLight, flexShrink: 0 }}>â†’</div>
               </button>
             ))}
           </div>
@@ -740,10 +740,10 @@ export default function NgobrolEng() {
             Kenapa NgobrolEng?
           </div>
           {[
-            { emoji: "🤖", title: "AI yang Sabar", text: "Nggak perlu malu salah grammar. AI kita akan bantu kamu pelan-pelan." },
-            { emoji: "🆓", title: "Gratis!", text: "Latihan ngobrol English kapan aja, dari mana aja. Cuma butuh HP." },
-            { emoji: "🎯", title: "Langsung Praktik", text: "Bukan hafalan rumus grammar — langsung ngobrol topik yang kamu suka." },
-            { emoji: "📈", title: "Makin Lancar", text: "Semakin sering ngobrol, semakin cas cis cus English kamu!" },
+            { emoji: "ðŸ¤–", title: "AI yang Sabar", text: "Nggak perlu malu salah grammar. AI kita akan bantu kamu pelan-pelan." },
+            { emoji: "ðŸ†“", title: "Gratis!", text: "Latihan ngobrol English kapan aja, dari mana aja. Cuma butuh HP." },
+            { emoji: "ðŸŽ¯", title: "Langsung Praktik", text: "Bukan hafalan rumus grammar â€” langsung ngobrol topik yang kamu suka." },
+            { emoji: "ðŸ“ˆ", title: "Makin Lancar", text: "Semakin sering ngobrol, semakin cas cis cus English kamu!" },
           ].map((item, i) => (
             <div key={i} style={{
               display: "flex", gap: 12, marginBottom: 10, alignItems: "flex-start",
@@ -771,14 +771,14 @@ export default function NgobrolEng() {
             <div style={{ height: 4, flex: 1, background: C.red }} />
           </div>
           <div style={{ fontSize: 12, color: "#94a3b8" }}>
-            NgobrolEng © 2026 · The fun place to learn English
+            NgobrolEng Â© 2026 Â· The fun place to learn English
           </div>
         </div>
       </div>
     );
   }
 
-  // ─── CHAT VIEW ───
+  // â”€â”€â”€ CHAT VIEW â”€â”€â”€
   return (
     <div style={{
       height: "100vh", display: "flex", flexDirection: "column",
@@ -796,7 +796,7 @@ export default function NgobrolEng() {
           background: "rgba(255,255,255,0.12)", border: "none", color: "#fff",
           width: 34, height: 34, borderRadius: 10, cursor: "pointer", fontSize: 18,
           display: "flex", alignItems: "center", justifyContent: "center",
-        }}>←</button>
+        }}>â†</button>
         <div style={{
           width: 36, height: 36, borderRadius: "50%",
           background: `linear-gradient(135deg, ${C.blueMid}, ${C.blueLight})`,
@@ -820,7 +820,7 @@ export default function NgobrolEng() {
                 }}>{selectedScenario.badge}</span>
                 {selectedScenario.label}
               </>
-            ) : selectedScenario ? `🎯 ${selectedScenario.label}` : "Your English buddy 🐾"}
+            ) : selectedScenario ? `ðŸŽ¯ ${selectedScenario.label}` : "Your English buddy ðŸ¾"}
           </div>
         </div>
         {/* Voice selector */}
@@ -833,7 +833,7 @@ export default function NgobrolEng() {
             display: "flex", alignItems: "center", gap: 4,
           }}
         >
-          🔊 {VOICES[selectedVoice]?.label}
+          ðŸ”Š {VOICES[selectedVoice]?.label}
         </button>
       </div>
 
@@ -844,7 +844,7 @@ export default function NgobrolEng() {
       }}>
         {messages.map((m, i) => {
           const isLastAI = m.role === "assistant" && i === messages.length - 1;
-          return <Message key={i} msg={m} voiceId={VOICES[selectedVoice]?.id} autoPlay={isLastAI && !loading} />;
+          return <Message key={i} msg={m} voiceId={VOICES[selectedVoice]?.id} autoPlay={isLastAI && !loading} onSpeakDone={isLastAI ? () => setTimeout(startListening, 500) : null} />;
         })}
         {loading && (
           <div style={{ display: "flex", alignItems: "center", gap: 8, paddingLeft: 4 }}>
@@ -886,7 +886,7 @@ export default function NgobrolEng() {
               animation: isRecording ? "pulse 1.5s ease-in-out infinite" : "none",
             }}
           >
-            🎤
+            ðŸŽ¤
           </button>
           <style>{`@keyframes pulse { 0%,100% { box-shadow: 0 0 0 4px rgba(220,38,38,0.25) } 50% { box-shadow: 0 0 0 8px rgba(220,38,38,0.15) } }`}</style>
           <input
@@ -894,7 +894,7 @@ export default function NgobrolEng() {
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === "Enter" && !e.shiftKey && !loading && (e.preventDefault(), sendMessage(input))}
-            placeholder={isRecording ? "🎤  Listening... speak in English!" : "Type or tap 🎤 to speak..."}
+            placeholder={isRecording ? "ðŸŽ¤  Listening... speak in English!" : "Type or tap ðŸŽ¤ to speak..."}
             style={{
               flex: 1, padding: "12px 16px", borderRadius: 14,
               border: `1.5px solid ${isRecording ? C.red : C.grayLight}`, fontSize: 15, outline: "none",
@@ -916,7 +916,7 @@ export default function NgobrolEng() {
               boxShadow: input.trim() && !loading ? "0 2px 8px rgba(220,38,38,0.25)" : "none",
             }}
           >
-            ↑
+            â†‘
           </button>
         </div>
       </div>
