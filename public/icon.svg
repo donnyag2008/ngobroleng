@@ -1,0 +1,48 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Circle background -->
+  <circle cx="100" cy="100" r="100" fill="#1e3a8a"/>
+  
+  <!-- Fox head -->
+  <g transform="translate(100, 108) scale(1.15)">
+    <!-- Head shape -->
+    <ellipse cx="0" cy="0" rx="38" ry="34" fill="#E8630A"/>
+    <!-- Cheek fur -->
+    <ellipse cx="-30" cy="10" rx="10" ry="8" fill="#D45500"/>
+    <ellipse cx="30" cy="10" rx="10" ry="8" fill="#D45500"/>
+    <!-- White face -->
+    <path d="M-18,-13 Q0,-20 18,-13 L14,22 Q0,32 -14,22 Z" fill="#FFF0DC"/>
+    
+    <!-- Ears -->
+    <path d="M-36,-16 Q-46,-56 -22,-34 L-26,-12 Z" fill="#E8630A"/>
+    <path d="M-34,-18 Q-42,-48 -24,-32 L-26,-14 Z" fill="#FFB8B8"/>
+    <path d="M36,-16 Q46,-56 22,-34 L26,-12 Z" fill="#E8630A"/>
+    <path d="M34,-18 Q42,-48 24,-32 L26,-14 Z" fill="#FFB8B8"/>
+    
+    <!-- Left eye — open -->
+    <ellipse cx="-12" cy="-3" rx="7" ry="8" fill="#fff"/>
+    <ellipse cx="-10" cy="-2" rx="5" ry="6" fill="#2D1B0E"/>
+    <circle cx="-8" cy="-5" r="2" fill="#fff"/>
+    
+    <!-- Right eye — winking -->
+    <path d="M5,-3 Q12,-10 19,-3" stroke="#2D1B0E" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+    
+    <!-- Nose -->
+    <ellipse cx="0" cy="10" rx="5" ry="3.5" fill="#2D1B0E"/>
+    
+    <!-- Mouth — cheeky grin -->
+    <path d="M-8,15 Q-3,21 0,16 Q3,21 8,15" stroke="#2D1B0E" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+    
+    <!-- Tongue -->
+    <ellipse cx="0" cy="21" rx="4" ry="5.5" fill="#FF6B6B"/>
+    <ellipse cx="0" cy="20" rx="2.5" ry="3.5" fill="#FF9090"/>
+  </g>
+  
+  <!-- Red headphones -->
+  <g transform="translate(100, 108) scale(1.15)">
+    <path d="M-40,-10 Q-42,-48 0,-54 Q42,-48 40,-10" stroke="#333" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
+    <rect x="-48" y="-18" width="16" height="22" rx="5" fill="#C8102E"/>
+    <rect x="-46" y="-16" width="12" height="18" rx="4" fill="#E02040"/>
+    <rect x="32" y="-18" width="16" height="22" rx="5" fill="#C8102E"/>
+    <rect x="34" y="-16" width="12" height="18" rx="4" fill="#E02040"/>
+  </g>
+</svg>
