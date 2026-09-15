@@ -735,8 +735,11 @@ export default function NgobrolEng() {
               padding: "2px 8px", borderRadius: 6, letterSpacing: "0.5px",
             }}>NEW</span>
           </div>
-          <div style={{ fontSize: 13, color: C.gray, marginBottom: 16 }}>
+          <div style={{ fontSize: 13, color: C.gray, marginBottom: 6 }}>
             Latihan IELTS & TOEFL gratis — AI jadi examiner kamu!
+          </div>
+          <div style={{ fontSize: 11, color: "#94a3b8", marginBottom: 16, fontStyle: "italic" }}>
+            * Latihan simulasi — bukan tes resmi IELTS/TOEFL. Format & skor mengikuti struktur ujian asli.
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
