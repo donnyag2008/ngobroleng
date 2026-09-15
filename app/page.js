@@ -446,16 +446,36 @@ export default function NgobrolEng() {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
-  // ElevenLabs voice IDs — placeholder until celebrity voices
+  // ElevenLabs voice IDs — British for IELTS/casual, American for TOEFL
   const VOICES = {
-    lily: { id: "pFZP5JQG7iQjIQuC4Bku", label: "Lily 🇬🇧", desc: "Warm British female" },
-    george: { id: "JBFqnCBsd6RMkjVDRZzb", label: "George 🇬🇧", desc: "Warm British male" },
+    lily: { id: "pFZP5JQG7iQjIQuC4Bku", label: "Lily 🇬🇧", desc: "Warm British female", accent: "british" },
+    george: { id: "JBFqnCBsd6RMkjVDRZzb", label: "George 🇬🇧", desc: "Warm British male", accent: "british" },
+    rachel: { id: "21m00Tcm4TlvDq8ikWAM", label: "Rachel 🇺🇸", desc: "Warm American female", accent: "american" },
+    josh: { id: "TxGEqnHWrfWFTfGW9XjX", label: "Josh 🇺🇸", desc: "Clear American male", accent: "american" },
   };
 
   useEffect(() => {
     // Load voices for TTS
     window.speechSynthesis?.getVoices();
   }, []);
+
+  // Handle phone back button — go to landing instead of closing app
+  useEffect(() => {
+    function handleBack(e) {
+      if (view === "chat") {
+        e.preventDefault();
+        setView("landing");
+        // Stop any ongoing speech
+        window.speechSynthesis?.cancel();
+        if (recognitionRef.current) {
+          recognitionRef.current.stop();
+          setIsRecording(false);
+        }
+      }
+    }
+    window.addEventListener("popstate", handleBack);
+    return () => window.removeEventListener("popstate", handleBack);
+  }, [view]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -522,10 +542,17 @@ export default function NgobrolEng() {
   function startChat(scenario) {
     setSelectedScenario(scenario || null);
     setChatMode(scenario?.mode || "casual");
+    // Auto-switch voice: American for TOEFL, British for IELTS/casual
+    if (scenario?.mode?.startsWith("toefl")) {
+      setSelectedVoice("rachel");
+    } else {
+      setSelectedVoice("lily");
+    }
     setMessages(scenario
       ? [{ role: "assistant", content: scenario.prompt }]
       : [{ role: "assistant", content: "Hey! 👋 Aku NgobrolEng, teman ngobrol bahasa Inggris kamu. Mau ngobrol tentang apa hari ini? Just type in English — or Bahasa juga boleh, nanti aku bantu! 😊" }]
     );
+    window.history.pushState({ view: "chat" }, "");
     setView("chat");
   }
 
@@ -825,7 +852,13 @@ export default function NgobrolEng() {
         </div>
         {/* Voice selector */}
         <button
-          onClick={() => setSelectedVoice(v => v === "lily" ? "george" : "lily")}
+          onClick={() => setSelectedVoice(v => {
+            if (v === "lily") return "george";
+            if (v === "george") return "lily";
+            if (v === "rachel") return "josh";
+            if (v === "josh") return "rachel";
+            return "lily";
+          })}
           style={{
             background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.2)",
             color: "#fff", padding: "4px 10px", borderRadius: 8,
