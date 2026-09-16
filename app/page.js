@@ -301,7 +301,7 @@ function TypingIndicator() {
   );
 }
 
-function Message({ msg, voiceId, autoPlay, onSpeakDone, activeAudioRef }) {
+notepad app\page.js{
   const isUser = msg.role === "user";
   const [speaking, setSpeaking] = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);
@@ -922,7 +922,7 @@ export default function NgobrolEng() {
       }}>
         {messages.map((m, i) => {
           const isLastAI = m.role === "assistant" && i === messages.length - 1;
-          return <Message key={i} msg={m} voiceId={VOICES[selectedVoice]?.id} autoPlay={isLastAI && !loading} onSpeakDone={isLastAI ? () => setTimeout(startListening, 500) : null} activeAudioRef={activeAudioRef} />;
+          return <Message key={i} msg={m} voiceId={VOICES[selectedVoice]?.id} autoPlay={false} onSpeakDone={isLastAI ? () => setTimeout(startListening, 500) : null} activeAudioRef={activeAudioRef} />;
         })}
         {loading && (
           <div style={{ display: "flex", alignItems: "center", gap: 8, paddingLeft: 4 }}>
