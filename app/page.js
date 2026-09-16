@@ -301,7 +301,7 @@ function TypingIndicator() {
   );
 }
 
-notepad app\page.js{
+function Message({ msg, voiceId, autoPlay, onSpeakDone, activeAudioRef }){
   const isUser = msg.role === "user";
   const [speaking, setSpeaking] = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);
