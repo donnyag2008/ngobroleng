@@ -520,9 +520,7 @@ export default function NgobrolEng() {
         recognition.stop();
       }, 3000);
     };
-    recognition.onerror = () => setIsRecording(false);
-    recognition.onend = () => setIsRecording(false);
-    };
+    
     recognition.onerror = () => setIsRecording(false);
     recognition.onend = () => setIsRecording(false);
     recognitionRef.current = recognition;
