@@ -17,9 +17,12 @@ const TEST_PREP = [
   { icon: "💬", label: "IELTS Part 3", desc: "Discussion — deeper analytical questions", prompt: "Welcome to IELTS Speaking Part 3 practice! This is the discussion round where we explore ideas in more depth. I'll ask you some questions that require you to analyse, compare, and give your opinion. Let's begin.", mode: "ielts_part3", badge: "IELTS", badgeColor: "#7c3aed" },
   { icon: "🇺🇸", label: "TOEFL Independent", desc: "Express & support your personal opinion", prompt: "Welcome to TOEFL iBT Speaking practice! We'll start with an Independent Speaking Task. I'll give you a question, you get 15 seconds to prepare, then 45 seconds to speak. Ready? Here's your first question.", mode: "toefl_independent", badge: "TOEFL", badgeColor: "#ea580c" },
   { icon: "📚", label: "TOEFL Integrated", desc: "Summarise readings & lectures", prompt: "Welcome to TOEFL iBT Integrated Speaking practice! I'll present you with a short reading passage and a related lecture, then ask you to summarise and connect the information. Let's start with Task 2.", mode: "toefl_integrated", badge: "TOEFL", badgeColor: "#ea580c" },
-];
-  { icon: "📖", label: "IELTS Reading", desc: "Academic reading passages & comprehension", prompt: "Welcome to IELTS Academic Reading practice! I'll give you a passage and ask questions using real IELTS formats: True/False/Not Given, matching, and more. Let's start!", mode: "ielts_reading", badge: "IELTS", badgeColor: "#7c3aed" },
+
+{ icon: "📖", label: "IELTS Reading", desc: "Academic reading passages & comprehension", prompt: "Welcome to IELTS Academic Reading practice! I'll give you a passage and ask questions using real IELTS formats: True/False/Not Given, matching, and more. Let's start!", mode: "ielts_reading", badge: "IELTS", badgeColor: "#7c3aed" },
   { icon: "📚", label: "TOEFL Reading", desc: "Academic passages & comprehension questions", prompt: "Welcome to TOEFL iBT Reading practice! I'll present an academic passage and ask questions in real TOEFL formats. Let's begin!", mode: "toefl_reading", badge: "TOEFL", badgeColor: "#ea580c" },
+
+];
+  
 const C = {
   blue: "#1e3a8a",
   blueMid: "#2563eb",
