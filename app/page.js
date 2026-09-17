@@ -575,12 +575,20 @@ export default function NgobrolEng() {
     } else {
       setSelectedVoice("lily");
     }
-    setMessages(scenario
-      ? [{ role: "assistant", content: scenario.prompt }]
-      : [{ role: "assistant", content: "Hey! 👋 Aku NgobrolEng, teman ngobrol bahasa Inggris kamu. Mau ngobrol tentang apa hari ini? Just type in English — or Bahasa juga boleh, nanti aku bantu! 😊" }]
-    );
-    window.history.pushState({ view: "chat" }, "");
-    setView("chat");
+        var isReading = scenario && (scenario.mode === "ielts_reading" || scenario.mode === "toefl_reading");
+    if (isReading) {
+      setMessages([{ role: "assistant", content: scenario.prompt }]);
+      window.history.pushState({ view: "chat" }, "");
+      setView("chat");
+      setTimeout(() => sendMessage("Start"), 500);
+    } else {
+      setMessages(scenario
+        ? [{ role: "assistant", content: scenario.prompt }]
+        : [{ role: "assistant", content: "Hey! 👋 Aku NgobrolEng, teman ngobrol bahasa Inggris kamu. Mau ngobrol tentang apa hari ini? Just type in English — or Bahasa juga boleh, nanti aku bantu! 😊" }]
+      );
+      window.history.pushState({ view: "chat" }, "");
+      setView("chat");
+    }
   }
 
   // ─── LANDING PAGE ───
@@ -965,7 +973,9 @@ export default function NgobrolEng() {
         background: C.white, flexShrink: 0,
       }}>
         <div style={{ display: "flex", gap: 8, maxWidth: 600, margin: "0 auto", alignItems: "center" }}>
-          {/* Mic button */}
+           {/* Mic button - hidden in reading modes */}
+          {chatMode !== "ielts_reading" && chatMode !== "toefl_reading" && <button
+            onClick={toggleRecording}
           <button
             onClick={toggleRecording}
             disabled={loading}
@@ -982,14 +992,14 @@ export default function NgobrolEng() {
             }}
           >
             🎤
-          </button>
+         </button>}
           <style>{`@keyframes pulse { 0%,100% { box-shadow: 0 0 0 4px rgba(220,38,38,0.25) } 50% { box-shadow: 0 0 0 8px rgba(220,38,38,0.15) } }`}</style>
           <input
             ref={inputRef}
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === "Enter" && !e.shiftKey && !loading && (e.preventDefault(), sendMessage(input))}
-            placeholder={isRecording ? "🎤  Listening... speak in English!" : "Type or tap 🎤 to speak..."}
+                        placeholder={chatMode === "ielts_reading" || chatMode === "toefl_reading" ? "Type your answer..." : isRecording ? "🎤  Listening... speak in English!" : "Type or tap 🎤 to speak..."}
             style={{
               flex: 1, padding: "12px 16px", borderRadius: 14,
               border: `1.5px solid ${isRecording ? C.red : C.grayLight}`, fontSize: 15, outline: "none",
