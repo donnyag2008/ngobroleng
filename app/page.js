@@ -19,9 +19,13 @@ const TEST_PREP = [
   { icon: "📚", label: "TOEFL Integrated", desc: "Summarise readings & lectures", prompt: "Welcome to TOEFL iBT Integrated Speaking practice! I'll present you with a short reading passage and a related lecture, then ask you to summarise and connect the information. Let's start with Task 2.", mode: "toefl_integrated", badge: "TOEFL", badgeColor: "#ea580c" },
 
 { icon: "📖", label: "IELTS Reading", desc: "Academic reading passages & comprehension", prompt: "Welcome to IELTS Academic Reading practice! I'll give you a passage and ask questions using real IELTS formats: True/False/Not Given, matching, and more. Let's start!", mode: "ielts_reading", badge: "IELTS", badgeColor: "#7c3aed" },
+  
   { icon: "📚", label: "TOEFL Reading", desc: "Academic passages & comprehension questions", prompt: "Welcome to TOEFL iBT Reading practice! I'll present an academic passage and ask questions in real TOEFL formats. Let's begin!", mode: "toefl_reading", badge: "TOEFL", badgeColor: "#ea580c" },
-
+  { icon: "🎧", label: "IELTS Listening", desc: "Listen to a passage & answer comprehension questions", prompt: "", mode: "ielts_listening", badge: "IELTS", badgeColor: "#7c3aed", listening: true },
+  { icon: "🎧", label: "TOEFL Listening", desc: "Listen to a lecture & answer comprehension questions", prompt: "", mode: "toefl_listening", badge: "TOEFL", badgeColor: "#ea580c", listening: true },
 ];
+
+
   
 const C = {
   blue: "#1e3a8a",
@@ -417,10 +421,25 @@ function Message({ msg, voiceId, autoPlay, onSpeakDone, activeAudioRef, chatMode
             : "0 1px 4px rgba(0,0,0,0.06)",
           border: isUser ? "none" : `1px solid ${C.grayLight}`,
         }}>
-          {msg.content}
+                   {msg.content.startsWith("AUDIO:") ? (function() {
+            var parts = msg.content.split(":");
+            var src = parts[1] + ":" + parts[2];
+            var fileId = parts[3];
+            return React.createElement("div", null,
+              React.createElement("audio", { controls: true, style: { width: "100%", borderRadius: 8 }, src: src, onEnded: function() {
+                fetch("/listening/" + fileId + ".json").then(function(r) { return r.json(); }).then(function(meta) {
+                  fetch(src).then(function() {
+                    var transcript = "I just listened to a passage titled: " + meta.title + ". Please start asking me questions about it.";
+                    if (typeof window.__ngobrolSend === "function") window.__ngobrolSend(transcript);
+                  });
+                });
+              } }),
+              React.createElement("p", { style: { fontSize: 12, color: "#999", marginTop: 4 } }, "🎧 Listen carefully, then answer questions")
+            );
+          })() : msg.content}
         </div>
         {/* Speaker button for AI messages */}
-   {!isUser && chatMode !== "ielts_reading" && chatMode !== "toefl_reading" && (
+           {!isUser && chatMode !== "ielts_reading" && chatMode !== "toefl_reading" && chatMode !== "ielts_listening" && chatMode !== "toefl_listening" && (
           <button
             onClick={speakMessage}
             style={{
@@ -542,7 +561,8 @@ export default function NgobrolEng() {
   }
 
   async function sendMessage(userText) {
-    if (!userText.trim()) return;
+    window.__ngobrolSend = sendMessage;    
+if (!userText.trim()) return;
     const newMessages = [...messages, { role: "user", content: userText.trim() }];
     setMessages(newMessages);
     setInput("");
@@ -575,7 +595,24 @@ export default function NgobrolEng() {
     } else {
       setSelectedVoice("lily");
     }
-            var isReading = scenario && (scenario.mode === "ielts_reading" || scenario.mode === "toefl_reading");
+        
+    var isListening = scenario && scenario.listening;
+    if (isListening) {
+      var prefix = scenario.mode === "ielts_listening" ? "ielts" : "toefl";
+      var num = String(Math.floor(Math.random() * 10) + 1).padStart(2, "0");
+      var audioSrc = "/listening/" + prefix + "-" + num + ".mp3";
+      setMessages([{ role: "assistant", content: "🎧 Press play to listen to the passage. When it finishes, I'll ask you questions about what you heard.\n\nYou can replay it once if needed. Listen carefully!" }]);
+      window.history.pushState({ view: "chat" }, "");
+      setView("chat");
+      setTimeout(function() {
+        var audioMsg = { role: "assistant", content: "AUDIO:" + audioSrc + ":" + prefix + "-" + num };
+        setMessages(function(prev) { return [...prev, audioMsg]; });
+      }, 300);
+      return;
+    }
+
+
+    var isReading = scenario && (scenario.mode === "ielts_reading" || scenario.mode === "toefl_reading");
     if (isReading) {
       var welcomeMsg = [{ role: "assistant", content: scenario.prompt }];
       setMessages([...welcomeMsg, { role: "user", content: "Start" }]);
@@ -990,7 +1027,7 @@ export default function NgobrolEng() {
       }}>
         <div style={{ display: "flex", gap: 8, maxWidth: 600, margin: "0 auto", alignItems: "center" }}>
            {/* Mic button - hidden in reading modes */}
-                    {chatMode !== "ielts_reading" && chatMode !== "toefl_reading" && <button
+                              {chatMode !== "ielts_reading" && chatMode !== "toefl_reading" && chatMode !== "ielts_listening" && chatMode !== "toefl_listening" && <button
             onClick={toggleRecording}
             disabled={loading}
             style={{
