@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 const SCENARIOS = [
   { icon: "☕", label: "Ordering Coffee", desc: "Practice ordering at a cafe", prompt: "Let's practice ordering coffee at a cafe. You walk in and I'm the barista. What would you like to order?", mode: "casual" },
@@ -421,10 +421,10 @@ function Message({ msg, voiceId, autoPlay, onSpeakDone, activeAudioRef, chatMode
             : "0 1px 4px rgba(0,0,0,0.06)",
           border: isUser ? "none" : `1px solid ${C.grayLight}`,
         }}>
-                   {msg.content.startsWith("AUDIO:") ? (function() {
-            var parts = msg.content.split(":");
-            var src = parts[1] + ":" + parts[2];
-            var fileId = parts[3];
+                    {msg.content.startsWith("AUDIO:") ? (function() {
+            var parts = msg.content.replace("AUDIO:", "").split(":");
+            var src = parts[0];
+            var fileId = parts[1];
             return React.createElement("div", null,
               React.createElement("audio", { controls: true, style: { width: "100%", borderRadius: 8 }, src: src, onEnded: function() {
                 fetch("/listening/" + fileId + ".json").then(function(r) { return r.json(); }).then(function(meta) {
