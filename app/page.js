@@ -974,9 +974,7 @@ export default function NgobrolEng() {
       }}>
         <div style={{ display: "flex", gap: 8, maxWidth: 600, margin: "0 auto", alignItems: "center" }}>
            {/* Mic button - hidden in reading modes */}
-          {chatMode !== "ielts_reading" && chatMode !== "toefl_reading" && <button
-            onClick={toggleRecording}
-          <button
+                    {chatMode !== "ielts_reading" && chatMode !== "toefl_reading" && <button
             onClick={toggleRecording}
             disabled={loading}
             style={{
