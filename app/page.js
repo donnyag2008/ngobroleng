@@ -575,12 +575,28 @@ export default function NgobrolEng() {
     } else {
       setSelectedVoice("lily");
     }
-        var isReading = scenario && (scenario.mode === "ielts_reading" || scenario.mode === "toefl_reading");
+            var isReading = scenario && (scenario.mode === "ielts_reading" || scenario.mode === "toefl_reading");
     if (isReading) {
-      setMessages([{ role: "assistant", content: scenario.prompt }]);
+      var welcomeMsg = [{ role: "assistant", content: scenario.prompt }];
+      setMessages([...welcomeMsg, { role: "user", content: "Start" }]);
+      setLoading(true);
       window.history.pushState({ view: "chat" }, "");
       setView("chat");
-      setTimeout(() => sendMessage("Start"), 500);
+      fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [{ role: "assistant", content: scenario.prompt }, { role: "user", content: "Start" }],
+          scenario: scenario.label + ". " + scenario.desc,
+          mode: scenario.mode,
+        }),
+      }).then(r => r.json()).then(data => {
+        setMessages(prev => [...prev, { role: "assistant", content: data.reply }]);
+        setLoading(false);
+      }).catch(() => {
+        setMessages(prev => [...prev, { role: "assistant", content: "Oops, something went wrong. Coba lagi ya!" }]);
+        setLoading(false);
+      });
     } else {
       setMessages(scenario
         ? [{ role: "assistant", content: scenario.prompt }]
