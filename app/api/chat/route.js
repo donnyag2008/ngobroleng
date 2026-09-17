@@ -35,7 +35,7 @@ export async function POST(request) {
     var res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({ model: 'claude-haiku-4-5', max_tokens: 300, system: prompt, messages: messages })
+      body: JSON.stringify({ model: 'claude-haiku-4-5', max_tokens: mode === 'ielts_reading' || mode === 'toefl_reading' ? 1500 : 300, system: prompt, messages: messages })
     });
     var data = await res.json();
     var reply = data.content ? data.content.map(function(b) { return b.text || ''; }).join('') : 'Sorry, could not respond.';
