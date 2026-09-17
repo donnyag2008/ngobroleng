@@ -428,10 +428,11 @@ function Message({ msg, voiceId, autoPlay, onSpeakDone, activeAudioRef, chatMode
             return React.createElement("div", null,
               React.createElement("audio", { controls: true, style: { width: "100%", borderRadius: 8 }, src: src, onEnded: function() {
                 fetch("/listening/" + fileId + ".json").then(function(r) { return r.json(); }).then(function(meta) {
-                  fetch(src).then(function() {
-                    var transcript = "I just listened to a passage titled: " + meta.title + ". Please start asking me questions about it.";
-                    if (typeof window.__ngobrolSend === "function") window.__ngobrolSend(transcript);
-                  });
+                  var transcript = "I just listened to a passage titled: " + meta.title + ". Please start asking me questions about it.";
+                  if (typeof window.__ngobrolSend === "function") window.__ngobrolSend(transcript);
+                }).catch(function() {
+                  var transcript = "I just finished listening to the passage. Please start asking me questions about it.";
+                  if (typeof window.__ngobrolSend === "function") window.__ngobrolSend(transcript);
                 });
               } }),
               React.createElement("p", { style: { fontSize: 12, color: "#999", marginTop: 4 } }, "🎧 Listen carefully, then answer questions")
