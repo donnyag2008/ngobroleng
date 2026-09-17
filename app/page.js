@@ -587,7 +587,8 @@ if (!userText.trim()) return;
     }
     setLoading(false);
   }
-window.__ngobrolSend = sendMessage;
+
+  if (typeof window !== "undefined") window.__ngobrolSend = sendMessage;
 
   function startChat(scenario) {
     setSelectedScenario(scenario || null);
