@@ -751,8 +751,16 @@ if (!userText.trim()) return;
 
               <div style={{ position: "relative" }}>
                 <div style={{ fontSize: 17, fontWeight: 600, marginBottom: 6 }}>Practice English with AI</div>
-                <div style={{ fontSize: 13, opacity: 0.85, lineHeight: 1.5, marginBottom: 20 }}>
+                <div style={{ fontSize: 13, opacity: 0.85, lineHeight: 1.5, marginBottom: 8 }}>
                   Ngobrol santai sama AI yang sabar, seru, dan nggak akan menghakimi kamu. Gratis!
+                </div>
+                <div style={{ display: "flex", gap: 5, justifyContent: "center", flexWrap: "wrap", marginBottom: 16 }}>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: "#fff", background: "#7c3aed", padding: "3px 8px", borderRadius: 20 }}>IELTS</span>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: "#fff", background: "#ea580c", padding: "3px 8px", borderRadius: 20 }}>TOEFL</span>
+                  <span style={{ fontSize: 10, fontWeight: 600, color: "#fff", background: "rgba(255,255,255,0.15)", padding: "3px 8px", borderRadius: 20 }}>🎤 Speaking</span>
+                  <span style={{ fontSize: 10, fontWeight: 600, color: "#fff", background: "rgba(255,255,255,0.15)", padding: "3px 8px", borderRadius: 20 }}>📖 Reading</span>
+                  <span style={{ fontSize: 10, fontWeight: 600, color: "#fff", background: "rgba(255,255,255,0.15)", padding: "3px 8px", borderRadius: 20 }}>🎧 Listening</span>
+                  <span style={{ fontSize: 10, fontWeight: 600, color: "#fff", background: "rgba(255,255,255,0.15)", padding: "3px 8px", borderRadius: 20 }}>✍️ Writing</span>
                 </div>
                 <button
                   onClick={() => startChat(null)}
