@@ -561,8 +561,9 @@ export default function NgobrolEng() {
     startListening();
   }
 
-  async function sendMessage(userText) {
-    window.__ngobrolSend = sendMessage;    
+   
+async function sendMessage(userText) {
+       
 if (!userText.trim()) return;
     const newMessages = [...messages, { role: "user", content: userText.trim() }];
     setMessages(newMessages);
@@ -586,6 +587,7 @@ if (!userText.trim()) return;
     }
     setLoading(false);
   }
+window.__ngobrolSend = sendMessage;
 
   function startChat(scenario) {
     setSelectedScenario(scenario || null);
