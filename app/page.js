@@ -1036,7 +1036,7 @@ if (!userText.trim()) return;
       }}>
         <div style={{ display: "flex", gap: 8, maxWidth: 600, margin: "0 auto", alignItems: "center" }}>
            {/* Mic button - hidden in reading modes */}
-                              {chatMode !== "ielts_reading" && chatMode !== "toefl_reading" && chatMode !== "ielts_listening" && chatMode !== "toefl_listening" &&  && chatMode !== "ielts_writing_task1" && chatMode !== "ielts_writing_task2" && chatMode !== "toefl_writing" <button
+                              {chatMode !== "ielts_reading" && chatMode !== "toefl_reading" && chatMode !== "ielts_listening" && chatMode !== "toefl_listening"  && chatMode !== "ielts_writing_task1" && chatMode !== "ielts_writing_task2" && chatMode !== "toefl_writing" <button
             onClick={toggleRecording}
             disabled={loading}
             style={{
