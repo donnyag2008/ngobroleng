@@ -23,6 +23,11 @@ const TEST_PREP = [
   { icon: "📚", label: "TOEFL Reading", desc: "Academic passages & comprehension questions", prompt: "Welcome to TOEFL iBT Reading practice! I'll present an academic passage and ask questions in real TOEFL formats. Let's begin!", mode: "toefl_reading", badge: "TOEFL", badgeColor: "#ea580c" },
   { icon: "🎧", label: "IELTS Listening", desc: "Listen to a passage & answer comprehension questions", prompt: "", mode: "ielts_listening", badge: "IELTS", badgeColor: "#7c3aed", listening: true },
   { icon: "🎧", label: "TOEFL Listening", desc: "Listen to a lecture & answer comprehension questions", prompt: "", mode: "toefl_listening", badge: "TOEFL", badgeColor: "#ea580c", listening: true },
+
+  { icon: "✍️", label: "IELTS Writing Task 1", desc: "Describe a chart, graph or diagram (150+ words)", prompt: "Welcome to IELTS Academic Writing Task 1 practice! I'll describe some data for you to write about. Type 'Ready' to get your task!", mode: "ielts_writing_task1", badge: "IELTS", badgeColor: "#7c3aed" },
+  { icon: "📝", label: "IELTS Writing Task 2", desc: "Essay on a given topic (250+ words)", prompt: "Welcome to IELTS Academic Writing Task 2 practice! I'll give you an essay question. Type 'Ready' to get your topic!", mode: "ielts_writing_task2", badge: "IELTS", badgeColor: "#7c3aed" },
+  { icon: "✍️", label: "TOEFL Writing", desc: "Opinion essay with reasons & examples (300+ words)", prompt: "Welcome to TOEFL iBT Writing practice! I'll give you a question to write about. Type 'Ready' to begin!", mode: "toefl_writing", badge: "TOEFL", badgeColor: "#ea580c" },
+
 ];
 
 
@@ -616,7 +621,7 @@ if (!userText.trim()) return;
     }
 
 
-    var isReading = scenario && (scenario.mode === "ielts_reading" || scenario.mode === "toefl_reading");
+       var isReading = scenario && (scenario.mode === "ielts_reading" || scenario.mode === "toefl_reading" || scenario.mode === "ielts_writing_task1" || scenario.mode === "ielts_writing_task2" || scenario.mode === "toefl_writing");
     if (isReading) {
       var welcomeMsg = [{ role: "assistant", content: scenario.prompt }];
       setMessages([...welcomeMsg, { role: "user", content: "Start" }]);
@@ -1031,7 +1036,7 @@ if (!userText.trim()) return;
       }}>
         <div style={{ display: "flex", gap: 8, maxWidth: 600, margin: "0 auto", alignItems: "center" }}>
            {/* Mic button - hidden in reading modes */}
-                              {chatMode !== "ielts_reading" && chatMode !== "toefl_reading" && chatMode !== "ielts_listening" && chatMode !== "toefl_listening" && <button
+                              {chatMode !== "ielts_reading" && chatMode !== "toefl_reading" && chatMode !== "ielts_listening" && chatMode !== "toefl_listening" &&  && chatMode !== "ielts_writing_task1" && chatMode !== "ielts_writing_task2" && chatMode !== "toefl_writing" <button
             onClick={toggleRecording}
             disabled={loading}
             style={{
