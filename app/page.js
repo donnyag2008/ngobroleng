@@ -47,6 +47,21 @@ const C = {
 };
 
 // Union Jack SVG as a reusable component for the "Eng" badge background
+// Anonymous per-device ID (localStorage) so students on the same school WiFi
+// get their own daily quota instead of sharing one IP quota.
+function getDeviceId() {
+  try {
+    let id = localStorage.getItem("ngobroleng_device");
+    if (!id) {
+      id = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(36).slice(2));
+      localStorage.setItem("ngobroleng_device", id);
+    }
+    return id;
+  } catch {
+    return "";
+  }
+}
+
 function UnionJackBadge({ text = "ENG", height = 28, fontSize = 16, borderRadius = 0 }) {
   const width = Math.round(height * 2.1);
   return (
@@ -352,7 +367,7 @@ function Message({ msg, voiceId, autoPlay, onSpeakDone, activeAudioRef, chatMode
     try {
       const res = await fetch("/api/tts", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Device-Id": getDeviceId() },
         body: JSON.stringify({
           text: msg.content,
           voiceId: voiceId || "21m00Tcm4TlvDq8ikWAM",
@@ -631,7 +646,7 @@ if (!userText.trim()) return;
       const apiMessages = newMessages.map(m => ({ role: m.role, content: m.content }));
       const res = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Device-Id": getDeviceId() },
         body: JSON.stringify({
           messages: apiMessages,
           scenario: selectedScenario ? `${selectedScenario.label}. ${selectedScenario.desc}` : null,
@@ -683,7 +698,7 @@ if (!userText.trim()) return;
       setView("chat");
       fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Device-Id": getDeviceId() },
         body: JSON.stringify({
           messages: [{ role: "assistant", content: scenario.prompt }, { role: "user", content: "Start" }],
           scenario: scenario.label + ". " + scenario.desc,
