@@ -18,7 +18,7 @@ const C = {
   grayLight: '#e2e8f0',
 };
 
-const EMAIL = '[EMAIL KONTAK]';
+const EMAIL = 'donnybachtiar8@gmail.com';
 
 const s = {
   page: { minHeight: '100vh', background: C.offWhite, color: C.navy, fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" },
