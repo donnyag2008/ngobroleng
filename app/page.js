@@ -940,6 +940,9 @@ if (!userText.trim()) return;
           <div style={{ fontSize: 12, color: "#94a3b8" }}>
             NgobrolEng © 2026 · The fun place to learn English
           </div>
+          <div style={{ fontSize: 12, marginTop: 6 }}>
+            <a href="/privasi" style={{ color: C.gray, fontWeight: 600 }}>Kebijakan Privasi</a>
+          </div>
         </div>
       </div>
     );
