@@ -464,6 +464,59 @@ function Message({ msg, voiceId, autoPlay, onSpeakDone, activeAudioRef, chatMode
   );
 }
 
+// London skyline shapes (360 x 100), reused in hero card (mobile) and full-width hero (desktop)
+function SkylineShapes() {
+  return (
+    <>
+      {/* London Eye */}
+      <circle cx="45" cy="42" r="28" fill="none" stroke="#fff" strokeWidth="2.5"/>
+      <line x1="45" y1="70" x2="45" y2="100" stroke="#fff" strokeWidth="2.5"/>
+      {/* Spokes */}
+      <line x1="45" y1="14" x2="45" y2="70" stroke="#fff" strokeWidth="1"/>
+      <line x1="17" y1="42" x2="73" y2="42" stroke="#fff" strokeWidth="1"/>
+      <line x1="25" y1="22" x2="65" y2="62" stroke="#fff" strokeWidth="1"/>
+      <line x1="65" y1="22" x2="25" y2="62" stroke="#fff" strokeWidth="1"/>
+      {/* Small buildings left */}
+      <rect x="5" y="75" width="12" height="25" fill="#fff"/>
+      <rect x="20" y="70" width="10" height="30" fill="#fff"/>
+      {/* Big Ben / Elizabeth Tower */}
+      <rect x="100" y="20" width="16" height="80" fill="#fff"/>
+      <rect x="97" y="16" width="22" height="8" fill="#fff"/>
+      <polygon points="108,4 97,16 119,16" fill="#fff"/>
+      <rect x="106" y="0" width="4" height="6" fill="#fff"/>
+      {/* Parliament building */}
+      <rect x="118" y="52" width="45" height="48" fill="#fff"/>
+      <rect x="120" y="45" width="8" height="10" fill="#fff"/>
+      <rect x="132" y="42" width="8" height="13" fill="#fff"/>
+      <rect x="144" y="45" width="8" height="10" fill="#fff"/>
+      <rect x="155" y="48" width="6" height="8" fill="#fff"/>
+      {/* The Shard */}
+      <polygon points="190,8 185,100 195,100" fill="#fff"/>
+      {/* Tower Bridge */}
+      <rect x="220" y="40" width="14" height="60" fill="#fff"/>
+      <rect x="270" y="40" width="14" height="60" fill="#fff"/>
+      <rect x="218" y="36" width="18" height="8" fill="#fff"/>
+      <rect x="268" y="36" width="18" height="8" fill="#fff"/>
+      {/* Bridge top walkway */}
+      <rect x="234" y="42" width="36" height="5" fill="#fff"/>
+      {/* Bridge arches */}
+      <path d="M220,100 Q227,80 234,100" fill="#fff"/>
+      <path d="M270,100 Q277,80 284,100" fill="#fff"/>
+      {/* Bridge road */}
+      <rect x="210" y="75" width="84" height="6" fill="#fff"/>
+      {/* St Paul's dome */}
+      <rect x="310" y="60" width="30" height="40" fill="#fff"/>
+      <ellipse cx="325" cy="60" rx="18" ry="14" fill="#fff"/>
+      <rect x="322" y="42" width="6" height="18" fill="#fff"/>
+      <circle cx="325" cy="40" r="3" fill="#fff"/>
+      {/* Small buildings right */}
+      <rect x="345" y="70" width="15" height="30" fill="#fff"/>
+      {/* Ground line */}
+      <rect x="0" y="98" width="360" height="2" fill="#fff"/>
+    </>
+  );
+}
+
 export default function NgobrolEng() {
   const [view, setView] = useState("landing");
   const [messages, setMessages] = useState([]);
@@ -666,6 +719,20 @@ if (!userText.trim()) return;
           padding: "48px 20px 56px", textAlign: "center", color: "#fff",
           borderRadius: "0 0 32px 32px", position: "relative", overflow: "hidden",
         }}>
+          {/* Full-width London skyline (laptop/PC only) */}
+          <svg
+            className="skyline-wide"
+            viewBox="0 0 1800 100"
+            preserveAspectRatio="xMidYMax slice"
+            style={{
+              position: "absolute", bottom: 0, left: 0, width: "100%", height: 110,
+              opacity: 0.1, pointerEvents: "none",
+            }}
+          >
+            {[0, 360, 720, 1080, 1440].map(x => (
+              <g key={x} transform={`translate(${x},0)`}><SkylineShapes /></g>
+            ))}
+          </svg>
           {/* Decorative elements */}
           <div style={{
             position: "absolute", top: 20, right: -20, width: 140, height: 140,
@@ -696,7 +763,7 @@ if (!userText.trim()) return;
               position: "relative", overflow: "hidden",
             }}>
               {/* London skyline silhouette */}
-              <svg
+              <svg className="skyline-card"
                 viewBox="0 0 360 100"
                 style={{
                   position: "absolute", bottom: 56, left: 0, right: 0,
@@ -704,51 +771,7 @@ if (!userText.trim()) return;
                 }}
                 preserveAspectRatio="xMidYMax meet"
               >
-                {/* London Eye */}
-                <circle cx="45" cy="42" r="28" fill="none" stroke="#fff" strokeWidth="2.5"/>
-                <line x1="45" y1="70" x2="45" y2="100" stroke="#fff" strokeWidth="2.5"/>
-                {/* Spokes */}
-                <line x1="45" y1="14" x2="45" y2="70" stroke="#fff" strokeWidth="1"/>
-                <line x1="17" y1="42" x2="73" y2="42" stroke="#fff" strokeWidth="1"/>
-                <line x1="25" y1="22" x2="65" y2="62" stroke="#fff" strokeWidth="1"/>
-                <line x1="65" y1="22" x2="25" y2="62" stroke="#fff" strokeWidth="1"/>
-                {/* Small buildings left */}
-                <rect x="5" y="75" width="12" height="25" fill="#fff"/>
-                <rect x="20" y="70" width="10" height="30" fill="#fff"/>
-                {/* Big Ben / Elizabeth Tower */}
-                <rect x="100" y="20" width="16" height="80" fill="#fff"/>
-                <rect x="97" y="16" width="22" height="8" fill="#fff"/>
-                <polygon points="108,4 97,16 119,16" fill="#fff"/>
-                <rect x="106" y="0" width="4" height="6" fill="#fff"/>
-                {/* Parliament building */}
-                <rect x="118" y="52" width="45" height="48" fill="#fff"/>
-                <rect x="120" y="45" width="8" height="10" fill="#fff"/>
-                <rect x="132" y="42" width="8" height="13" fill="#fff"/>
-                <rect x="144" y="45" width="8" height="10" fill="#fff"/>
-                <rect x="155" y="48" width="6" height="8" fill="#fff"/>
-                {/* The Shard */}
-                <polygon points="190,8 185,100 195,100" fill="#fff"/>
-                {/* Tower Bridge */}
-                <rect x="220" y="40" width="14" height="60" fill="#fff"/>
-                <rect x="270" y="40" width="14" height="60" fill="#fff"/>
-                <rect x="218" y="36" width="18" height="8" fill="#fff"/>
-                <rect x="268" y="36" width="18" height="8" fill="#fff"/>
-                {/* Bridge top walkway */}
-                <rect x="234" y="42" width="36" height="5" fill="#fff"/>
-                {/* Bridge arches */}
-                <path d="M220,100 Q227,80 234,100" fill="#fff"/>
-                <path d="M270,100 Q277,80 284,100" fill="#fff"/>
-                {/* Bridge road */}
-                <rect x="210" y="75" width="84" height="6" fill="#fff"/>
-                {/* St Paul's dome */}
-                <rect x="310" y="60" width="30" height="40" fill="#fff"/>
-                <ellipse cx="325" cy="60" rx="18" ry="14" fill="#fff"/>
-                <rect x="322" y="42" width="6" height="18" fill="#fff"/>
-                <circle cx="325" cy="40" r="3" fill="#fff"/>
-                {/* Small buildings right */}
-                <rect x="345" y="70" width="15" height="30" fill="#fff"/>
-                {/* Ground line */}
-                <rect x="0" y="98" width="360" height="2" fill="#fff"/>
+                <SkylineShapes />
               </svg>
 
               <div style={{ position: "relative" }}>
