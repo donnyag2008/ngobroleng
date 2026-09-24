@@ -676,7 +676,8 @@ if (!userText.trim()) return;
             borderRadius: "50%", background: C.red, opacity: 0.07,
           }} />
 
-          <div style={{ position: "relative" }}>
+          <div className="hero-row" style={{ position: "relative" }}>
+            <div className="hero-brand">
             <div style={{ marginBottom: 4, display: "inline-flex", alignItems: "center", gap: 6 }}>
               <FoxMascot size={52} />
               <BrandLogo size="large" />
@@ -686,10 +687,11 @@ if (!userText.trim()) return;
             }}>
               Tempat Asyik Belajar Bahasa Inggris
             </div>
+            </div>
 
-            <div style={{
+            <div className="hero-card" style={{
               background: "rgba(255,255,255,0.1)", backdropFilter: "blur(10px)",
-              borderRadius: 20, padding: "24px 20px 20px", maxWidth: 360, margin: "0 auto",
+              borderRadius: 20, padding: "24px 20px 20px",
               border: "1px solid rgba(255,255,255,0.15)",
               position: "relative", overflow: "hidden",
             }}>
@@ -782,7 +784,7 @@ if (!userText.trim()) return;
         </div>
 
         {/* Scenarios */}
-        <div style={{ padding: "32px 20px 20px", maxWidth: 400, margin: "0 auto" }}>
+        <div className="lp-section" style={{ padding: "32px 20px 20px" }}>
           <div style={{ fontSize: 17, fontWeight: 700, color: C.navy, marginBottom: 4 }}>
             Pilih topik ngobrol
           </div>
@@ -790,7 +792,7 @@ if (!userText.trim()) return;
             Atau langsung freestyle di atas — terserah kamu!
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+          <div className="scenario-grid">
             {SCENARIOS.map(s => (
               <button key={s.label} onClick={() => startChat(s)} style={{
                 background: C.white, border: `1.5px solid ${C.grayLight}`, borderRadius: 16,
@@ -815,7 +817,7 @@ if (!userText.trim()) return;
         </div>
 
         {/* Test Prep */}
-        <div style={{ padding: "8px 20px 20px", maxWidth: 400, margin: "0 auto" }}>
+        <div className="lp-section" style={{ padding: "8px 20px 20px" }}>
           <div style={{
             display: "flex", alignItems: "center", gap: 8, marginBottom: 4,
           }}>
@@ -835,7 +837,7 @@ if (!userText.trim()) return;
             * Latihan simulasi — bukan tes resmi IELTS/TOEFL. Format & skor mengikuti struktur ujian asli.
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div className="testprep-grid">
             {TEST_PREP.map(s => (
               <button key={s.label} onClick={() => startChat(s)} style={{
                 background: C.white, border: `1.5px solid ${C.grayLight}`, borderRadius: 16,
@@ -870,10 +872,11 @@ if (!userText.trim()) return;
         </div>
 
         {/* Why NgobrolEng */}
-        <div style={{ padding: "20px 20px 36px", maxWidth: 400, margin: "0 auto" }}>
+        <div className="lp-section" style={{ padding: "20px 20px 36px" }}>
           <div style={{ fontSize: 17, fontWeight: 700, color: C.navy, marginBottom: 14 }}>
             Kenapa NgobrolEng?
           </div>
+          <div className="why-grid">
           {[
             { emoji: "🤖", title: "AI yang Sabar", text: "Nggak perlu malu salah grammar. AI kita akan bantu kamu pelan-pelan." },
             { emoji: "🆓", title: "Gratis!", text: "Latihan ngobrol English kapan aja, dari mana aja. Cuma butuh HP." },
@@ -881,7 +884,7 @@ if (!userText.trim()) return;
             { emoji: "📈", title: "Makin Lancar", text: "Semakin sering ngobrol, semakin cas cis cus English kamu!" },
           ].map((item, i) => (
             <div key={i} style={{
-              display: "flex", gap: 12, marginBottom: 10, alignItems: "flex-start",
+              display: "flex", gap: 12, alignItems: "flex-start",
               padding: "12px 14px", background: C.white, borderRadius: 14,
               border: `1px solid ${C.grayLight}`,
               borderLeft: `3px solid ${i % 2 === 0 ? C.blueMid : C.red}`,
@@ -893,10 +896,11 @@ if (!userText.trim()) return;
               </div>
             </div>
           ))}
+          </div>
         </div>
 
         {/* Share */}
-        <div style={{ padding: "0 20px 24px", maxWidth: 400, margin: "0 auto", textAlign: "center" }}>
+        <div className="lp-section" style={{ padding: "0 20px 24px", textAlign: "center" }}>
           <button
             onClick={async () => {
               const shareData = {
