@@ -1,3 +1,5 @@
+import { checkLimits } from '../../../lib/limits';
+
 export const runtime = 'edge';
 
 var PROMPTS = {
@@ -38,34 +40,12 @@ var PROMPTS = {
 };
 
 // ─── Cost protection ───
-// Daily chat limit per IP (in-memory, same approach as /api/tts).
-// Note: each server instance keeps its own count and it resets on cold start,
-// so this is a soft limit that stops heavy use, not a hard guarantee.
-var CHAT_LIMIT_PER_DAY = 50;
+// Daily chat limits: per device (so students sharing school WiFi each get their
+// own quota) plus a looser per-IP ceiling. Soft, in-memory — see lib/limits.js.
+var CHAT_PER_DEVICE = 50;
+var CHAT_PER_IP = 500;
 var MAX_HISTORY = 20;        // messages sent to the AI per request
 var MAX_CHARS = 4000;        // per message (IELTS/TOEFL essays fit comfortably)
-var chatLimitMap = new Map();
-
-function getDayKey() {
-  return new Date().toISOString().slice(0, 10);
-}
-
-function checkChatLimit(ip) {
-  var today = getDayKey();
-  var key = ip + ':' + today;
-  var count = chatLimitMap.get(key) || 0;
-  chatLimitMap.forEach(function(v, k) {
-    if (k.indexOf(today) === -1) chatLimitMap.delete(k);
-  });
-  if (count >= CHAT_LIMIT_PER_DAY) return false;
-  chatLimitMap.set(key, count + 1);
-  return true;
-}
-
-function getIp(request) {
-  var fwd = request.headers.get('x-forwarded-for') || '';
-  return fwd.split(',')[0].trim() || request.headers.get('x-real-ip') || 'unknown';
-}
 
 function cleanMessages(raw) {
   if (!Array.isArray(raw)) return [];
@@ -76,7 +56,7 @@ function cleanMessages(raw) {
 }
 
 export async function POST(request) {
-  if (!checkChatLimit(getIp(request))) {
+  if (!checkLimits('chat', request, CHAT_PER_DEVICE, CHAT_PER_IP)) {
     return Response.json({
       reply: "Wow, you've practised a lot today! 🎉 Kamu sudah mencapai batas latihan hari ini. Istirahat dulu, besok kita lanjut lagi ya! See you tomorrow! 👋"
     }, { status: 429 });
