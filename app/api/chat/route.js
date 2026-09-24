@@ -37,9 +37,59 @@ var PROMPTS = {
 
 };
 
+// ─── Cost protection ───
+// Daily chat limit per IP (in-memory, same approach as /api/tts).
+// Note: each server instance keeps its own count and it resets on cold start,
+// so this is a soft limit that stops heavy use, not a hard guarantee.
+var CHAT_LIMIT_PER_DAY = 50;
+var MAX_HISTORY = 20;        // messages sent to the AI per request
+var MAX_CHARS = 4000;        // per message (IELTS/TOEFL essays fit comfortably)
+var chatLimitMap = new Map();
+
+function getDayKey() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function checkChatLimit(ip) {
+  var today = getDayKey();
+  var key = ip + ':' + today;
+  var count = chatLimitMap.get(key) || 0;
+  chatLimitMap.forEach(function(v, k) {
+    if (k.indexOf(today) === -1) chatLimitMap.delete(k);
+  });
+  if (count >= CHAT_LIMIT_PER_DAY) return false;
+  chatLimitMap.set(key, count + 1);
+  return true;
+}
+
+function getIp(request) {
+  var fwd = request.headers.get('x-forwarded-for') || '';
+  return fwd.split(',')[0].trim() || request.headers.get('x-real-ip') || 'unknown';
+}
+
+function cleanMessages(raw) {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter(function(m) { return m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string' && m.content.trim(); })
+    .slice(-MAX_HISTORY)
+    .map(function(m) { return { role: m.role, content: m.content.slice(0, MAX_CHARS) }; });
+}
+
 export async function POST(request) {
-  var body = await request.json();
-  var messages = body.messages;
+  if (!checkChatLimit(getIp(request))) {
+    return Response.json({
+      reply: "Wow, you've practised a lot today! 🎉 Kamu sudah mencapai batas latihan hari ini. Istirahat dulu, besok kita lanjut lagi ya! See you tomorrow! 👋"
+    }, { status: 429 });
+  }
+
+  var body;
+  try { body = await request.json(); }
+  catch (e) { return Response.json({ reply: 'Oops, something went wrong. Coba lagi ya!' }, { status: 400 }); }
+
+  var messages = cleanMessages(body.messages);
+  if (!messages.length) {
+    return Response.json({ reply: 'Oops, pesannya kosong. Coba ketik lagi ya!' }, { status: 400 });
+  }
   var scenario = body.scenario || null;
   var mode = body.mode || 'casual';
 
