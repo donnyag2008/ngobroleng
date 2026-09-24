@@ -1,58 +1,76 @@
+import { checkLimits } from '../../../lib/limits';
+
 export const runtime = 'edge';
 
-// Daily TTS rate limit per IP (in-memory, resets on cold start)
-var ttsLimitMap = new Map();
+// ─── ElevenLabs cost protection ───
+var TTS_PER_DEVICE = 15;     // ElevenLabs plays per device per day
+var TTS_PER_IP = 150;        // ceiling per IP (school WiFi = many devices)
+var MAX_TTS_CHARS = 450;     // longer replies (test feedback) use browser voice
+var RESERVE_CREDITS = 3000;  // never spend the last few thousand credits
 
-function getDayKey() {
-  return new Date().toISOString().slice(0, 10);
-}
+// Pacing: ask ElevenLabs how many credits are left and how long until the
+// monthly reset. If we are spending faster than an even pace, switch to the
+// browser voice until we are back on schedule. No database needed.
+var quotaCache = { at: 0, ok: true };
 
-function checkTTSLimit(ip) {
-  var key = ip + ':' + getDayKey();
-  var count = ttsLimitMap.get(key) || 0;
-  ttsLimitMap.forEach(function(v, k) {
-    if (k.indexOf(getDayKey()) === -1) ttsLimitMap.delete(k);
-  });
-  if (count >= 15) return false;
-  ttsLimitMap.set(key, count + 1);
-  return true;
+async function quotaAllows() {
+  var now = Date.now();
+  if (now - quotaCache.at < 60 * 1000) return quotaCache.ok; // check at most once a minute
+  try {
+    var res = await fetch('https://api.elevenlabs.io/v1/user/subscription', {
+      headers: { 'xi-api-key': process.env.ELEVENLABS_API_KEY },
+    });
+    if (!res.ok) throw new Error('subscription ' + res.status);
+    var sub = await res.json();
+    var limit = sub.character_limit || 0;
+    var remaining = limit - (sub.character_count || 0);
+    var resetMs = (sub.next_character_count_reset_unix || 0) * 1000;
+    var period = 30 * 24 * 3600 * 1000;
+    var fractionLeft = Math.min(1, Math.max(0, (resetMs - now) / period));
+    // the credits we should still have at this point in the month (10% slack)
+    var onPace = limit * fractionLeft * 0.9;
+    var ok = remaining > RESERVE_CREDITS && remaining >= onPace;
+    quotaCache = { at: now, ok: ok };
+    return ok;
+  } catch (e) {
+    // can't read the quota (e.g. key lacks User read permission): rely on the
+    // per-device limits only, and retry in a minute
+    quotaCache = { at: now, ok: true };
+    return true;
+  }
 }
 
 export async function POST(request) {
-  var ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
-
-  if (!checkTTSLimit(ip)) {
-    return Response.json({ fallback: true }, { status: 200 });
-  }
-
-  var body = await request.json();
-  var text = body.text || '';
+  var body;
+  try { body = await request.json(); } catch (e) { return Response.json({ fallback: true }); }
+  var text = (body.text || '').trim();
   var voiceId = body.voiceId || '21m00Tcm4TlvDq8ikWAM';
 
-  if (!process.env.ELEVENLABS_API_KEY || !text) {
-    return Response.json({ fallback: true }, { status: 200 });
+  if (!process.env.ELEVENLABS_API_KEY || !text || text.length > MAX_TTS_CHARS) {
+    return Response.json({ fallback: true });
+  }
+  if (!(await quotaAllows())) {
+    return Response.json({ fallback: true });
+  }
+  // count against the quota only when we are actually going to call ElevenLabs
+  if (!checkLimits('tts', request, TTS_PER_DEVICE, TTS_PER_IP)) {
+    return Response.json({ fallback: true });
   }
 
   try {
-    var res = await fetch(
-      'https://api.elevenlabs.io/v1/text-to-speech/' + voiceId,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'xi-api-key': process.env.ELEVENLABS_API_KEY,
-        },
-        body: JSON.stringify({
-          text: text,
-          model_id: 'eleven_turbo_v2_5',
-          voice_settings: { stability: 0.5, similarity_boost: 0.75 },
-        }),
-      }
-    );
-
-    if (!res.ok) {
-      return Response.json({ fallback: true }, { status: 200 });
-    }
+    var res = await fetch('https://api.elevenlabs.io/v1/text-to-speech/' + voiceId, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'xi-api-key': process.env.ELEVENLABS_API_KEY,
+      },
+      body: JSON.stringify({
+        text: text,
+        model_id: 'eleven_turbo_v2_5',
+        voice_settings: { stability: 0.5, similarity_boost: 0.75 },
+      }),
+    });
+    if (!res.ok) return Response.json({ fallback: true });
 
     var audioBuffer = await res.arrayBuffer();
     return new Response(audioBuffer, {
@@ -62,6 +80,6 @@ export async function POST(request) {
       },
     });
   } catch (e) {
-    return Response.json({ fallback: true }, { status: 200 });
+    return Response.json({ fallback: true });
   }
 }
