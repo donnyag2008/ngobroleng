@@ -1,5 +1,3 @@
-import { checkLimits } from '../../../lib/limits';
-
 export const runtime = 'edge';
 
 var PROMPTS = {
@@ -40,10 +38,6 @@ var PROMPTS = {
 };
 
 // ─── Cost protection ───
-// Daily chat limits: per device (so students sharing school WiFi each get their
-// own quota) plus a looser per-IP ceiling. Soft, in-memory — see lib/limits.js.
-var CHAT_PER_DEVICE = 50;
-var CHAT_PER_IP = 500;
 var MAX_HISTORY = 20;        // messages sent to the AI per request
 var MAX_CHARS = 4000;        // per message (IELTS/TOEFL essays fit comfortably)
 
@@ -56,12 +50,6 @@ function cleanMessages(raw) {
 }
 
 export async function POST(request) {
-  if (!checkLimits('chat', request, CHAT_PER_DEVICE, CHAT_PER_IP)) {
-    return Response.json({
-      reply: "Wow, you've practised a lot today! 🎉 Kamu sudah mencapai batas latihan hari ini. Istirahat dulu, besok kita lanjut lagi ya! See you tomorrow! 👋"
-    }, { status: 429 });
-  }
-
   var body;
   try { body = await request.json(); }
   catch (e) { return Response.json({ reply: 'Oops, something went wrong. Coba lagi ya!' }, { status: 400 }); }
