@@ -329,6 +329,9 @@ function TypingIndicator() {
   );
 }
 
+// Modes with long text replies (passages, essays, scoring) — no autoplay there
+const NO_AUTOPLAY_MODES = ["ielts_reading", "toefl_reading", "ielts_listening", "toefl_listening", "ielts_writing_task1", "ielts_writing_task2", "toefl_writing"];
+
 function Message({ msg, voiceId, autoPlay, onSpeakDone, activeAudioRef, chatMode }){
   const isUser = msg.role === "user";
   const [speaking, setSpeaking] = useState(false);
@@ -1062,7 +1065,7 @@ if (!userText.trim()) return;
       }}>
         {messages.map((m, i) => {
           const isLastAI = m.role === "assistant" && i === messages.length - 1;
-          return <Message key={i} msg={m} voiceId={VOICES[selectedVoice]?.id} autoPlay={false} onSpeakDone={isLastAI ? () => setTimeout(startListening, 500) : null} activeAudioRef={activeAudioRef} chatMode={chatMode} />;
+          return <Message key={i} msg={m} voiceId={VOICES[selectedVoice]?.id} autoPlay={isLastAI && !NO_AUTOPLAY_MODES.includes(chatMode)}onSpeakDone={isLastAI ? () => setTimeout(startListening, 500) : null} activeAudioRef={activeAudioRef} chatMode={chatMode} />;
         })}
         {loading && (
           <div style={{ display: "flex", alignItems: "center", gap: 8, paddingLeft: 4 }}>
