@@ -545,6 +545,9 @@ export default function NgobrolEng() {
   const [isRecording, setIsRecording] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState("lily");
   const recognitionRef = useRef(null);
+  // Always points at the latest sendMessage, so speech can auto-send when the student stops talking
+  const sendRef = useRef(null);
+  sendRef.current = sendMessage;
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const activeAudioRef = useRef(null);
@@ -604,25 +607,27 @@ export default function NgobrolEng() {
     recognition.interimResults = true;
     recognition.continuous = true;
     let silenceTimer = null;
+    let spoken = "";
     recognition.onresult = (event) => {
-      let finalTranscript = "";
-      let interimTranscript = "";
+      let text = "";
       for (let i = 0; i < event.results.length; i++) {
-        if (event.results[i].isFinal) {
-          finalTranscript += event.results[i][0].transcript;
-        } else {
-          interimTranscript += event.results[i][0].transcript;
-        }
+        text += event.results[i][0].transcript;
       }
-      setInput(finalTranscript || interimTranscript);
+      spoken = text;
+      setInput(text);
       if (silenceTimer) clearTimeout(silenceTimer);
+      // 3 seconds of silence = student has finished → stop and send automatically
       silenceTimer = setTimeout(() => {
         recognition.stop();
       }, 3000);
     };
-    
+
     recognition.onerror = () => setIsRecording(false);
-    recognition.onend = () => setIsRecording(false);
+    recognition.onend = () => {
+      if (silenceTimer) clearTimeout(silenceTimer);
+      setIsRecording(false);
+      if (spoken.trim() && sendRef.current) sendRef.current(spoken);
+    };
     recognitionRef.current = recognition;
     recognition.start();
     setIsRecording(true);
@@ -1115,7 +1120,7 @@ if (!userText.trim()) return;
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === "Enter" && !e.shiftKey && !loading && (e.preventDefault(), sendMessage(input))}
-                        placeholder={chatMode === "ielts_reading" || chatMode === "toefl_reading" ? "Type your answer..." : isRecording ? "🎤  Listening... speak in English!" : "Type or tap 🎤 to speak..."}
+                        placeholder={chatMode === "ielts_reading" || chatMode === "toefl_reading" ? "Type your answer..." : isRecording ? "🎤  Listening... sends when you stop talking" : "Type or tap 🎤 to speak..."}
             style={{
               flex: 1, padding: "12px 16px", borderRadius: 14,
               border: `1.5px solid ${isRecording ? C.red : C.grayLight}`, fontSize: 15, outline: "none",
