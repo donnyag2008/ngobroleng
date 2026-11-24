@@ -1,10 +1,6 @@
-import { checkLimits } from '../../../lib/limits';
-
 export const runtime = 'edge';
 
 // ─── ElevenLabs cost protection ───
-var TTS_PER_DEVICE = 15;     // ElevenLabs plays per device per day
-var TTS_PER_IP = 150;        // ceiling per IP (school WiFi = many devices)
 var MAX_TTS_CHARS = 450;     // longer replies (test feedback) use browser voice
 var RESERVE_CREDITS = 3000;  // never spend the last few thousand credits
 
@@ -50,10 +46,6 @@ export async function POST(request) {
     return Response.json({ fallback: true });
   }
   if (!(await quotaAllows())) {
-    return Response.json({ fallback: true });
-  }
-  // count against the quota only when we are actually going to call ElevenLabs
-  if (!checkLimits('tts', request, TTS_PER_DEVICE, TTS_PER_IP)) {
     return Response.json({ fallback: true });
   }
 
